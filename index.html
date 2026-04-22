@@ -178,6 +178,7 @@
       position: absolute;
       font-size: 1.4rem;
       animation: fall linear infinite;
+      animation-fill-mode: both;
       opacity: 0.6;
       pointer-events: none;
     }
@@ -867,6 +868,21 @@
     setActiveTrack(activeTrackIndex - 1, true);
   }
 
+  function attemptAutoStart() {
+    setActiveTrack(document.getElementById('memories').classList.contains('active') ? 1 : 0, true);
+  }
+
+  function setupFirstInteractionAutoplayRetry() {
+    const retry = () => {
+      const audio = getActiveMusicAudio();
+      if (!audio.paused) return;
+      audio.play().then(syncMusicButton).catch(() => {});
+    };
+    ['pointerdown', 'touchstart', 'keydown'].forEach((eventName) => {
+      window.addEventListener(eventName, retry, { once: true });
+    });
+  }
+
   // ─── COUNTER ───
   // 🔧 SET YOUR START DATE HERE
   const startDate = new Date('2025-12-24T00:00:00');
@@ -895,7 +911,7 @@
       left: ${Math.random() * 100}%;
       font-size: ${0.9 + Math.random() * 1.2}rem;
       animation-duration: ${6 + Math.random() * 8}s;
-      animation-delay: ${Math.random() * 8}s;
+      animation-delay: -${Math.random() * 8}s;
     `;
     homeEl.appendChild(p);
   }
@@ -925,6 +941,9 @@
   memoriesAudio.addEventListener('loadedmetadata', syncMusicProgress);
   beforeYouAudio.addEventListener('timeupdate', syncMusicProgress);
   beforeYouAudio.addEventListener('loadedmetadata', syncMusicProgress);
+  bgAudio.addEventListener('ended', playNextTrack);
+  memoriesAudio.addEventListener('ended', playNextTrack);
+  beforeYouAudio.addEventListener('ended', playNextTrack);
   document.getElementById('music-progress').addEventListener('input', (event) => {
     const audio = getActiveMusicAudio();
     if (!audio.duration) return;
@@ -936,7 +955,8 @@
     document.getElementById('music-cover').style.display = 'none';
     document.getElementById('music-cover-fallback').style.display = 'grid';
   });
-  setActiveTrack(document.getElementById('memories').classList.contains('active') ? 1 : 0, false);
+  attemptAutoStart();
+  setupFirstInteractionAutoplayRetry();
 
   // ─── LIGHTBOX ───
   function openLightbox(polaroidEl) {
