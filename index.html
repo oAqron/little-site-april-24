@@ -48,21 +48,109 @@
     nav a:hover, nav a.active { color: var(--accent); }
 
     /* ─── MUSIC PLAYER ─── */
-    #music-btn {
-      position: fixed; bottom: 2rem; right: 2rem; z-index: 200;
-      width: 52px; height: 52px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--rose), var(--lavender));
-      border: none; cursor: pointer;
-      font-size: 1.4rem;
-      box-shadow: 0 4px 20px rgba(201,123,138,0.35);
-      transition: transform 0.3s, box-shadow 0.3s;
-      display: flex; align-items: center; justify-content: center;
+    .music-player {
+      position: fixed;
+      right: 1.2rem;
+      bottom: 1.2rem;
+      z-index: 220;
+      width: min(340px, calc(100vw - 2rem));
+      padding: 0.8rem;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.45);
+      background: linear-gradient(145deg, rgba(255,248,242,0.72), rgba(252,228,236,0.58));
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 34px rgba(90,62,75,0.18);
     }
-    #music-btn:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(201,123,138,0.5); }
-    #music-btn.playing { animation: pulse 2s infinite; }
-    @keyframes pulse {
-      0%,100% { box-shadow: 0 4px 20px rgba(201,123,138,0.35); }
-      50%      { box-shadow: 0 4px 32px rgba(201,123,138,0.65); }
+    .music-top {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .music-cover-wrap {
+      width: 60px;
+      height: 60px;
+      border-radius: 14px;
+      overflow: hidden;
+      flex: 0 0 60px;
+      background: linear-gradient(135deg, var(--rose), var(--lavender));
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      font-size: 1.3rem;
+    }
+    #music-cover {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .music-meta {
+      min-width: 0;
+      flex: 1;
+    }
+    .music-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .music-artist {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--muted);
+      margin-top: 0.1rem;
+    }
+    .music-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      margin-top: 0.75rem;
+    }
+    .music-control-btn {
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.56);
+      color: var(--accent);
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+      box-shadow: 0 3px 8px rgba(201,123,138,0.2);
+    }
+    .music-control-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.8);
+    }
+    #music-prev, #music-next {
+      width: 34px;
+      height: 34px;
+      font-size: 0.95rem;
+    }
+    #music-btn {
+      width: 44px;
+      height: 44px;
+      font-size: 1.1rem;
+    }
+    #music-btn.playing {
+      background: linear-gradient(135deg, rgba(242,196,206,0.95), rgba(232,213,245,0.95));
+    }
+    .music-progress-wrap {
+      margin-top: 0.75rem;
+    }
+    #music-progress {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .music-time {
+      margin-top: 0.2rem;
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Caveat', cursive;
+      font-size: 0.95rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
     }
 
     /* ─── PAGES ─── */
@@ -450,6 +538,17 @@
       .memory-item::after { left: 1.2rem; }
       nav { gap: 1rem; }
       nav a { font-size: 1rem; }
+      .music-player {
+        right: 0.7rem;
+        left: 0.7rem;
+        width: auto;
+        bottom: 0.7rem;
+      }
+      .music-cover-wrap {
+        width: 52px;
+        height: 52px;
+        flex-basis: 52px;
+      }
     }
   </style>
 </head>
@@ -463,8 +562,34 @@
   <a href="#" onclick="showPage('memories',this)">✨ Memories</a>
 </nav>
 
-<!-- MUSIC BUTTON -->
-<button id="music-btn" title="Toggle music" onclick="toggleMusic()">♪</button>
+<!-- MUSIC PLAYER -->
+<div class="music-player">
+  <div class="music-top">
+    <div class="music-cover-wrap">
+      <img id="music-cover" src="you-and-i-cover.jpg" alt="Song cover"/>
+      <span id="music-cover-fallback" aria-hidden="true">♪</span>
+    </div>
+    <div class="music-meta">
+      <p class="music-title" id="music-title">You and I</p>
+      <p class="music-artist" id="music-artist">One Direction</p>
+    </div>
+  </div>
+  <div class="music-controls">
+    <button id="music-prev" class="music-control-btn" type="button" onclick="playPreviousTrack()" title="Previous track">⏮</button>
+    <button id="music-btn" class="music-control-btn" type="button" onclick="toggleMusic()" title="Play or pause">▶</button>
+    <button id="music-next" class="music-control-btn" type="button" onclick="playNextTrack()" title="Next track">⏭</button>
+  </div>
+  <div class="music-progress-wrap">
+    <input id="music-progress" type="range" min="0" max="100" value="0" step="0.1" aria-label="Song progress"/>
+    <div class="music-time">
+      <span id="music-current-time">0:00</span>
+      <span id="music-duration">0:00</span>
+    </div>
+  </div>
+</div>
+<audio id="bg-music" loop preload="metadata">
+  <source src="your-song.mp3" type="audio/mpeg"/>
+</audio>
 <!-- Memories page: You and I — One Direction (add MP3 next to index.html) -->
 <audio id="memories-music" loop preload="metadata">
   <source src="you-and-i-one-direction.mp3" type="audio/mpeg"/>
@@ -644,33 +769,88 @@
   const bgAudio = document.getElementById('bg-music');
   const memoriesAudio = document.getElementById('memories-music');
 
+  const tracks = [
+    {
+      audio: bgAudio,
+      title: 'Our Song',
+      artist: 'For Us',
+      cover: 'our-song-cover.jpg'
+    },
+    {
+      audio: memoriesAudio,
+      title: 'You and I',
+      artist: 'One Direction',
+      cover: 'you-and-i-cover.jpg'
+    }
+  ];
+  let activeTrackIndex = 0;
+
+  function getActiveMusicAudio() {
+    return tracks[activeTrackIndex].audio;
+  }
+
   function showPage(id, linkEl) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
     if (linkEl) linkEl.classList.add('active');
 
-    if (id === 'memories') {
-      bgAudio.pause();
-      memoriesAudio.play().catch(() => {});
-    } else {
-      memoriesAudio.pause();
-    }
-    syncMusicButton();
+    const nextIndex = id === 'memories' ? 1 : 0;
+    const shouldResume = !getActiveMusicAudio().paused;
+    setActiveTrack(nextIndex, shouldResume);
   }
 
-  function getActiveMusicAudio() {
-    return document.getElementById('memories').classList.contains('active')
-      ? memoriesAudio
-      : bgAudio;
+  function formatTime(seconds) {
+    if (!Number.isFinite(seconds)) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${String(secs).padStart(2, '0')}`;
+  }
+
+  function setActiveTrack(index, shouldPlay) {
+    activeTrackIndex = (index + tracks.length) % tracks.length;
+    tracks.forEach((track, idx) => {
+      if (idx !== activeTrackIndex) track.audio.pause();
+    });
+    const track = tracks[activeTrackIndex];
+    const coverEl = document.getElementById('music-cover');
+    const fallbackEl = document.getElementById('music-cover-fallback');
+    document.getElementById('music-title').textContent = track.title;
+    document.getElementById('music-artist').textContent = track.artist;
+    coverEl.src = track.cover;
+    coverEl.style.display = 'block';
+    fallbackEl.style.display = 'none';
+    if (shouldPlay) track.audio.play().catch(() => {});
+    syncMusicButton();
+    syncMusicProgress();
   }
 
   function syncMusicButton() {
     const audio = getActiveMusicAudio();
     const btn = document.getElementById('music-btn');
     const playing = !audio.paused;
-    btn.textContent = playing ? '♫' : '♪';
+    btn.textContent = playing ? '⏸' : '▶';
     btn.classList.toggle('playing', playing);
+  }
+
+  function syncMusicProgress() {
+    const audio = getActiveMusicAudio();
+    const progress = document.getElementById('music-progress');
+    const currentTime = document.getElementById('music-current-time');
+    const duration = document.getElementById('music-duration');
+    const total = audio.duration || 0;
+    const pct = total ? (audio.currentTime / total) * 100 : 0;
+    progress.value = String(pct);
+    currentTime.textContent = formatTime(audio.currentTime);
+    duration.textContent = formatTime(total);
+  }
+
+  function playNextTrack() {
+    setActiveTrack(activeTrackIndex + 1, true);
+  }
+
+  function playPreviousTrack() {
+    setActiveTrack(activeTrackIndex - 1, true);
   }
 
   // ─── COUNTER ───
@@ -716,12 +896,29 @@
       audio.pause();
     }
     syncMusicButton();
+    syncMusicProgress();
   }
 
   bgAudio.addEventListener('play', syncMusicButton);
   bgAudio.addEventListener('pause', syncMusicButton);
   memoriesAudio.addEventListener('play', syncMusicButton);
   memoriesAudio.addEventListener('pause', syncMusicButton);
+  bgAudio.addEventListener('timeupdate', syncMusicProgress);
+  bgAudio.addEventListener('loadedmetadata', syncMusicProgress);
+  memoriesAudio.addEventListener('timeupdate', syncMusicProgress);
+  memoriesAudio.addEventListener('loadedmetadata', syncMusicProgress);
+  document.getElementById('music-progress').addEventListener('input', (event) => {
+    const audio = getActiveMusicAudio();
+    if (!audio.duration) return;
+    const nextTime = (Number(event.target.value) / 100) * audio.duration;
+    audio.currentTime = nextTime;
+    syncMusicProgress();
+  });
+  document.getElementById('music-cover').addEventListener('error', () => {
+    document.getElementById('music-cover').style.display = 'none';
+    document.getElementById('music-cover-fallback').style.display = 'grid';
+  });
+  setActiveTrack(document.getElementById('memories').classList.contains('active') ? 1 : 0, false);
 
   // ─── LIGHTBOX ───
   function openLightbox(polaroidEl) {
