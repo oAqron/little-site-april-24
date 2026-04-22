@@ -25,7 +25,7 @@
       background: var(--cream);
       color: var(--text);
       overflow-x: hidden;
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ctext y='16' font-size='16'%3E🌼%3C/text%3E%3C/svg%3E") 10 10, auto;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ctext y='16' font-size='16'%3E🌻%3C/text%3E%3C/svg%3E") 10 10, auto;
     }
 
     /* ─── NAV ─── */
@@ -182,10 +182,10 @@
       pointer-events: none;
     }
     @keyframes fall {
-      0%   { transform: translateY(-60px) rotate(0deg); opacity: 0; }
+      0%   { transform: translate(-8px, -60px) rotate(0deg); opacity: 0; }
       10%  { opacity: 0.7; }
       90%  { opacity: 0.5; }
-      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+      100% { transform: translate(var(--drift, 8px), 110vh) rotate(420deg); opacity: 0; }
     }
 
     .home-inner { position: relative; z-index: 2; }
@@ -613,7 +613,7 @@
     </h1>
     <p class="home-sub">— aaron</p>
 
-    <span class="home-heart">🌼</span>
+    <span class="home-heart">🌻</span>
 
     <div class="home-counter">
       <div class="counter-item">
@@ -900,7 +900,7 @@
   setInterval(updateCounter, 60000);
 
   // ─── FALLING PETALS ───
-  const petals = ['🌼','🌼','🌼','🌼','🌼','🌼'];
+  const petals = ['🌻','🌼','🌷','🌺','🪻','🌸'];
   const homeEl = document.getElementById('home');
   for (let i = 0; i < 14; i++) {
     const p = document.createElement('div');
@@ -909,8 +909,11 @@
     p.style.cssText = `
       left: ${Math.random() * 100}%;
       font-size: ${0.9 + Math.random() * 1.2}rem;
+      --drift: ${-20 + Math.random() * 40}px;
       animation-duration: ${6 + Math.random() * 8}s;
       animation-delay: ${Math.random() * 8}s;
+      animation-timing-function: ${Math.random() > 0.5 ? 'ease-in-out' : 'linear'};
+      opacity: ${0.45 + Math.random() * 0.35};
     `;
     homeEl.appendChild(p);
   }
