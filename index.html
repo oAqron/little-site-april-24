@@ -7,15 +7,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Caveat:wght@400;600;700&family=Lora:ital@0;1&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --rose:    #f2c4ce;
-      --blush:   #fce4ec;
-      --peach:   #ffd6c0;
-      --lavender:#e8d5f5;
-      --sage:    #d4e8d5;
-      --cream:   #fff8f2;
-      --text:    #5a3e4b;
-      --muted:   #9b7b88;
-      --accent:  #c97b8a;
+      --rose:    #f8e3a1;
+      --blush:   #fff4c7;
+      --peach:   #ffe2a8;
+      --lavender:#f7efbc;
+      --sage:    #e3e8b8;
+      --cream:   #fffdf2;
+      --text:    #5f4c2a;
+      --muted:   #9e8352;
+      --accent:  #d4a72f;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,7 +25,7 @@
       background: var(--cream);
       color: var(--text);
       overflow-x: hidden;
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ctext y='16' font-size='16'%3E🌸%3C/text%3E%3C/svg%3E") 10 10, auto;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ctext y='16' font-size='16'%3E🌼%3C/text%3E%3C/svg%3E") 10 10, auto;
     }
 
     /* ─── NAV ─── */
@@ -35,7 +35,7 @@
       padding: 1rem 2rem;
       background: rgba(255,248,242,0.85);
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(242,196,206,0.4);
+      border-bottom: 1px solid rgba(212,167,47,0.28);
     }
     nav a {
       font-family: 'Caveat', cursive;
@@ -57,7 +57,7 @@
       padding: 0.8rem;
       border-radius: 20px;
       border: 1px solid rgba(255,255,255,0.45);
-      background: linear-gradient(145deg, rgba(255,248,242,0.72), rgba(252,228,236,0.58));
+      background: linear-gradient(145deg, rgba(255,253,242,0.74), rgba(255,244,199,0.62));
       backdrop-filter: blur(16px);
       box-shadow: 0 10px 34px rgba(90,62,75,0.18);
     }
@@ -133,7 +133,7 @@
       font-size: 1.1rem;
     }
     #music-btn.playing {
-      background: linear-gradient(135deg, rgba(242,196,206,0.95), rgba(232,213,245,0.95));
+      background: linear-gradient(135deg, rgba(248,227,161,0.95), rgba(247,239,188,0.95));
     }
     .music-progress-wrap {
       margin-top: 0.75rem;
@@ -274,7 +274,7 @@
       background: var(--rose);
       color: var(--text);
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(242,196,206,0.5);
+      box-shadow: 0 8px 24px rgba(212,167,47,0.3);
     }
 
     /* background blobs */
@@ -422,11 +422,11 @@
       background-image: repeating-linear-gradient(
         transparent,
         transparent 35px,
-        rgba(242,196,206,0.35) 35px,
-        rgba(242,196,206,0.35) 36px
+        rgba(212,167,47,0.2) 35px,
+        rgba(212,167,47,0.2) 36px
       );
       padding: 1rem 2rem 2rem;
-      border-left: 3px solid rgba(242,196,206,0.6);
+      border-left: 3px solid rgba(212,167,47,0.4);
     }
     .letter-body p { margin-bottom: 1.5rem; }
     .letter-body em { font-style: italic; color: var(--accent); }
@@ -609,9 +609,9 @@
   <div class="home-inner">
     <p class="home-date">♡ &nbsp; 4 months &nbsp; ♡</p>
     <h1 class="home-title">
-      You & Me,<br/><em>always.</em>
+      You & I,<br/><em>always.</em>
     </h1>
-    <p class="home-sub">— made with every piece of my heart —</p>
+    <p class="home-sub">— Happy 4 months, fi :) —</p>
 
     <span class="home-heart">🌸</span>
 
@@ -885,7 +885,7 @@
   setInterval(updateCounter, 60000);
 
   // ─── FALLING PETALS ───
-  const petals = ['🌸','🌺','🌷','✿','❀','🌼'];
+  const petals = ['🌼','🌻','🌼','🌻','❀','✿'];
   const homeEl = document.getElementById('home');
   for (let i = 0; i < 14; i++) {
     const p = document.createElement('div');
