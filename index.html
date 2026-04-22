@@ -25,7 +25,7 @@
       background: var(--cream);
       color: var(--text);
       overflow-x: hidden;
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ctext y='16' font-size='16'%3E🌻%3C/text%3E%3C/svg%3E") 10 10, auto;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ctext y='16' font-size='16'%3E🌼%3C/text%3E%3C/svg%3E") 10 10, auto;
     }
 
     /* ─── NAV ─── */
@@ -182,10 +182,10 @@
       pointer-events: none;
     }
     @keyframes fall {
-      0%   { transform: translate(-8px, -60px) rotate(0deg); opacity: 0; }
+      0%   { transform: translateY(-60px) rotate(0deg); opacity: 0; }
       10%  { opacity: 0.7; }
       90%  { opacity: 0.5; }
-      100% { transform: translate(var(--drift, 8px), 110vh) rotate(420deg); opacity: 0; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
     }
 
     .home-inner { position: relative; z-index: 2; }
@@ -587,14 +587,14 @@
     </div>
   </div>
 </div>
-<audio id="bg-music" preload="metadata">
+<audio id="bg-music" loop preload="metadata">
   <source src="like-the-rain.mp3" type="audio/mpeg"/>
 </audio>
 <!-- Memories page: You and I — One Direction (add MP3 next to index.html) -->
-<audio id="memories-music" preload="metadata">
+<audio id="memories-music" loop preload="metadata">
   <source src="you-and-i-one-direction.mp3" type="audio/mpeg"/>
 </audio>
-<audio id="before-you-music" preload="metadata">
+<audio id="before-you-music" loop preload="metadata">
   <source src="before-you.mp3" type="audio/mpeg"/>
 </audio>
 
@@ -613,7 +613,7 @@
     </h1>
     <p class="home-sub">— aaron</p>
 
-    <span class="home-heart">🌻</span>
+    <span class="home-heart">⭐</span>
 
     <div class="home-counter">
       <div class="counter-item">
@@ -632,7 +632,7 @@
 
     <div class="home-cta">
       <a class="btn" href="#" onclick="showPage('letter',document.querySelectorAll('nav a')[2]);return false;">
-        read my letter ♡
+        read letter ♡
       </a>
     </div>
   </div>
@@ -641,8 +641,8 @@
 <!-- ══════════ PHOTOS ══════════ -->
 <section id="photos" class="page">
   <div class="photos-header">
-    <p class="page-label">a little gallery</p>
-    <h2 class="page-title">All the <em>beautiful</em> moments</h2>
+    <p class="page-label">gallery</p>
+    <h2 class="page-title">the most extra<em>ordinary</em> moments</h2>
   </div>
 
   <div class="polaroid-grid" id="photo-grid">
@@ -685,8 +685,8 @@
   <div class="letter-wrap">
     <div class="letter-header">
       <span class="letter-decoration">🌷</span>
-      <p class="page-label">a letter, written with love</p>
-      <p class="letter-to">My dearest Sophie,</p>
+      <p class="page-label">letter!</p>
+      <p class="letter-to">dear sophie,</p>
     </div>
 
     <div class="letter-body">
@@ -867,21 +867,6 @@
     setActiveTrack(activeTrackIndex - 1, true);
   }
 
-  function attemptAutoStart() {
-    setActiveTrack(document.getElementById('memories').classList.contains('active') ? 1 : 0, true);
-  }
-
-  function setupFirstInteractionAutoplayRetry() {
-    const retry = () => {
-      const audio = getActiveMusicAudio();
-      if (!audio.paused) return;
-      audio.play().then(syncMusicButton).catch(() => {});
-    };
-    ['pointerdown', 'touchstart', 'keydown'].forEach((eventName) => {
-      window.addEventListener(eventName, retry, { once: true });
-    });
-  }
-
   // ─── COUNTER ───
   // 🔧 SET YOUR START DATE HERE
   const startDate = new Date('2025-12-24T00:00:00');
@@ -900,7 +885,7 @@
   setInterval(updateCounter, 60000);
 
   // ─── FALLING PETALS ───
-  const petals = ['🌻','🌼','🌷','🌺','🪻','🌸'];
+  const petals = ['🌼','🌻','🌼','🌻','❀','✿'];
   const homeEl = document.getElementById('home');
   for (let i = 0; i < 14; i++) {
     const p = document.createElement('div');
@@ -909,11 +894,8 @@
     p.style.cssText = `
       left: ${Math.random() * 100}%;
       font-size: ${0.9 + Math.random() * 1.2}rem;
-      --drift: ${-20 + Math.random() * 40}px;
       animation-duration: ${6 + Math.random() * 8}s;
       animation-delay: ${Math.random() * 8}s;
-      animation-timing-function: ${Math.random() > 0.5 ? 'ease-in-out' : 'linear'};
-      opacity: ${0.45 + Math.random() * 0.35};
     `;
     homeEl.appendChild(p);
   }
@@ -943,9 +925,6 @@
   memoriesAudio.addEventListener('loadedmetadata', syncMusicProgress);
   beforeYouAudio.addEventListener('timeupdate', syncMusicProgress);
   beforeYouAudio.addEventListener('loadedmetadata', syncMusicProgress);
-  bgAudio.addEventListener('ended', playNextTrack);
-  memoriesAudio.addEventListener('ended', playNextTrack);
-  beforeYouAudio.addEventListener('ended', playNextTrack);
   document.getElementById('music-progress').addEventListener('input', (event) => {
     const audio = getActiveMusicAudio();
     if (!audio.duration) return;
@@ -957,8 +936,7 @@
     document.getElementById('music-cover').style.display = 'none';
     document.getElementById('music-cover-fallback').style.display = 'grid';
   });
-  attemptAutoStart();
-  setupFirstInteractionAutoplayRetry();
+  setActiveTrack(document.getElementById('memories').classList.contains('active') ? 1 : 0, false);
 
   // ─── LIGHTBOX ───
   function openLightbox(polaroidEl) {
