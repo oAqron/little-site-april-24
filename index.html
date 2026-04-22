@@ -53,8 +53,8 @@
       right: 1.2rem;
       bottom: 1.2rem;
       z-index: 220;
-      width: min(340px, calc(100vw - 2rem));
-      padding: 0.8rem;
+      width: min(370px, calc(100vw - 2rem));
+      padding: 0.9rem;
       border-radius: 20px;
       border: 1px solid rgba(255,255,255,0.45);
       background: linear-gradient(145deg, rgba(255,253,242,0.74), rgba(255,244,199,0.62));
@@ -151,6 +151,45 @@
       font-size: 0.95rem;
       color: var(--muted);
       letter-spacing: 0.02em;
+    }
+    .lyrics-wrap {
+      margin-top: 0.7rem;
+      padding: 0.55rem 0.65rem;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.45);
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    .lyrics-label {
+      font-family: 'Caveat', cursive;
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+    .lyrics-viewport {
+      height: 70px;
+      overflow: hidden;
+      position: relative;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+    }
+    .lyrics-roll {
+      transition: transform 0.65s ease;
+    }
+    .lyrics-line {
+      min-height: 24px;
+      line-height: 24px;
+      font-family: 'Lora', serif;
+      font-size: 0.83rem;
+      color: var(--muted);
+      opacity: 0.55;
+      transition: opacity 0.25s ease, color 0.25s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .lyrics-line.active {
+      color: var(--text);
+      opacity: 1;
     }
 
     /* ─── PAGES ─── */
@@ -587,6 +626,12 @@
       <span id="music-duration">0:00</span>
     </div>
   </div>
+  <div class="lyrics-wrap">
+    <p class="lyrics-label">live lyrics</p>
+    <div class="lyrics-viewport">
+      <div id="lyrics-roll" class="lyrics-roll"></div>
+    </div>
+  </div>
 </div>
 <audio id="bg-music" loop preload="metadata">
   <source src="like-the-rain.mp3" type="audio/mpeg"/>
@@ -597,6 +642,21 @@
 </audio>
 <audio id="before-you-music" loop preload="metadata">
   <source src="before-you.mp3" type="audio/mpeg"/>
+</audio>
+<audio id="blue-music" loop preload="metadata">
+  <source src="blue.mp3" type="audio/mpeg"/>
+</audio>
+<audio id="her-music" loop preload="metadata">
+  <source src="her.mp3" type="audio/mpeg"/>
+</audio>
+<audio id="photograph-music" loop preload="metadata">
+  <source src="photograph.mp3" type="audio/mpeg"/>
+</audio>
+<audio id="say-you-wont-let-go-music" loop preload="metadata">
+  <source src="say-you-wont-let-go.mp3" type="audio/mpeg"/>
+</audio>
+<audio id="rewrite-the-stars-music" loop preload="metadata">
+  <source src="rewrite-the-stars.mp3" type="audio/mpeg"/>
 </audio>
 
 <!-- ══════════ HOME ══════════ -->
@@ -773,6 +833,11 @@
   const bgAudio = document.getElementById('bg-music');
   const memoriesAudio = document.getElementById('memories-music');
   const beforeYouAudio = document.getElementById('before-you-music');
+  const blueAudio = document.getElementById('blue-music');
+  const herAudio = document.getElementById('her-music');
+  const photographAudio = document.getElementById('photograph-music');
+  const sayYouWontLetGoAudio = document.getElementById('say-you-wont-let-go-music');
+  const rewriteTheStarsAudio = document.getElementById('rewrite-the-stars-music');
 
   const tracks = [
     {
@@ -792,12 +857,122 @@
       title: 'Before You',
       artist: 'Benson Boone',
       cover: 'bensonb.jpg'
+    },
+    {
+      audio: blueAudio,
+      title: 'Blue',
+      artist: 'Yung Kai',
+      cover: 'yungk.jpg'
+    },
+    {
+      audio: herAudio,
+      title: 'Her',
+      artist: 'JVKE',
+      cover: 'jvke.jpg'
+    },
+    {
+      audio: photographAudio,
+      title: 'Photograph',
+      artist: 'Ed Sheeran',
+      cover: 'eds.jpg'
+    },
+    {
+      audio: sayYouWontLetGoAudio,
+      title: "Say You Won't Let Go",
+      artist: 'James Arthur',
+      cover: 'jamesa.jpg'
+    },
+    {
+      audio: rewriteTheStarsAudio,
+      title: 'Rewrite the Stars',
+      artist: 'Zac Efron',
+      cover: 'zac.jpg'
     }
   ];
   let activeTrackIndex = 0;
+  const lyricLineHeight = 24;
+  const lyricTimelines = [
+    [
+      { time: 0, text: 'Rain on the window, soft and slow.' },
+      { time: 9, text: 'Your name is the melody in my head.' },
+      { time: 20, text: 'Every drop feels like us tonight.' },
+      { time: 32, text: 'Heart steady, held by your smile.' }
+    ],
+    [
+      { time: 0, text: 'Two hearts, same sky.' },
+      { time: 10, text: 'Distance fades when you smile.' },
+      { time: 21, text: 'Every moment points back to you.' },
+      { time: 33, text: 'You and I, always.' }
+    ],
+    [
+      { time: 0, text: 'Quiet start, warm memory.' },
+      { time: 8, text: 'You make ordinary moments glow.' },
+      { time: 18, text: 'I stay where your voice feels close.' },
+      { time: 30, text: 'Before you, I never knew this peace.' }
+    ],
+    [
+      { time: 0, text: 'Blue sky, slow breath.' },
+      { time: 11, text: 'I keep your laugh in my pocket.' },
+      { time: 22, text: 'Everything softer when you are near.' },
+      { time: 34, text: 'The whole day turns bright for you.' }
+    ],
+    [
+      { time: 0, text: 'A single look and I am home.' },
+      { time: 10, text: 'Your heartbeat writes the rhythm.' },
+      { time: 21, text: 'I hear forever in a whisper.' },
+      { time: 34, text: 'Every verse points back to us.' }
+    ],
+    [
+      { time: 0, text: 'Small moments become golden.' },
+      { time: 9, text: 'Snapshots of us, soft and true.' },
+      { time: 20, text: 'I keep every smile like treasure.' },
+      { time: 32, text: 'Love stays in the little details.' }
+    ],
+    [
+      { time: 0, text: 'Hold this second, hold this hand.' },
+      { time: 11, text: 'Promise tucked between each breath.' },
+      { time: 22, text: 'No matter the miles, I choose you.' },
+      { time: 34, text: 'Stay with me through every season.' }
+    ],
+    [
+      { time: 0, text: 'City lights and a shared wish.' },
+      { time: 10, text: 'Two names written in the stars.' },
+      { time: 21, text: 'Dreams turn real when we are brave.' },
+      { time: 33, text: 'Rewrite the sky, just us.' }
+    ]
+  ];
 
   function getActiveMusicAudio() {
     return tracks[activeTrackIndex].audio;
+  }
+
+  function getCurrentTimeline() {
+    return lyricTimelines[activeTrackIndex] || [];
+  }
+
+  function renderLyricsRoll() {
+    const roll = document.getElementById('lyrics-roll');
+    const timeline = getCurrentTimeline();
+    roll.innerHTML = timeline.map((line, idx) =>
+      `<p class="lyrics-line${idx === 0 ? ' active' : ''}" data-idx="${idx}">${line.text}</p>`
+    ).join('');
+    roll.style.transform = 'translateY(0)';
+  }
+
+  function syncLyrics() {
+    const timeline = getCurrentTimeline();
+    if (!timeline.length) return;
+    const current = getActiveMusicAudio().currentTime || 0;
+    let activeLine = 0;
+    for (let i = 0; i < timeline.length; i++) {
+      if (current >= timeline[i].time) activeLine = i;
+    }
+    const roll = document.getElementById('lyrics-roll');
+    const offset = Math.max(0, activeLine - 1) * lyricLineHeight;
+    roll.style.transform = `translateY(-${offset}px)`;
+    roll.querySelectorAll('.lyrics-line').forEach((lineEl, idx) => {
+      lineEl.classList.toggle('active', idx === activeLine);
+    });
   }
 
   function showPage(id, linkEl) {
@@ -822,7 +997,7 @@
     return `${mins}:${String(secs).padStart(2, '0')}`;
   }
 
-  function setActiveTrack(index, shouldPlay) {
+  function setActiveTrack(index, shouldPlay, startFromBeginning = false) {
     activeTrackIndex = (index + tracks.length) % tracks.length;
     tracks.forEach((track, idx) => {
       if (idx !== activeTrackIndex) track.audio.pause();
@@ -835,7 +1010,9 @@
     coverEl.src = track.cover;
     coverEl.style.display = 'block';
     fallbackEl.style.display = 'none';
+    if (startFromBeginning) track.audio.currentTime = 0;
     if (shouldPlay) track.audio.play().catch(() => {});
+    renderLyricsRoll();
     syncMusicButton();
     syncMusicProgress();
   }
@@ -858,14 +1035,15 @@
     progress.value = String(pct);
     currentTime.textContent = formatTime(audio.currentTime);
     duration.textContent = formatTime(total);
+    syncLyrics();
   }
 
   function playNextTrack() {
-    setActiveTrack(activeTrackIndex + 1, true);
+    setActiveTrack(activeTrackIndex + 1, true, true);
   }
 
   function playPreviousTrack() {
-    setActiveTrack(activeTrackIndex - 1, true);
+    setActiveTrack(activeTrackIndex - 1, true, true);
   }
 
   function attemptAutoStart() {
@@ -935,15 +1113,40 @@
   memoriesAudio.addEventListener('pause', syncMusicButton);
   beforeYouAudio.addEventListener('play', syncMusicButton);
   beforeYouAudio.addEventListener('pause', syncMusicButton);
+  blueAudio.addEventListener('play', syncMusicButton);
+  blueAudio.addEventListener('pause', syncMusicButton);
+  herAudio.addEventListener('play', syncMusicButton);
+  herAudio.addEventListener('pause', syncMusicButton);
+  photographAudio.addEventListener('play', syncMusicButton);
+  photographAudio.addEventListener('pause', syncMusicButton);
+  sayYouWontLetGoAudio.addEventListener('play', syncMusicButton);
+  sayYouWontLetGoAudio.addEventListener('pause', syncMusicButton);
+  rewriteTheStarsAudio.addEventListener('play', syncMusicButton);
+  rewriteTheStarsAudio.addEventListener('pause', syncMusicButton);
   bgAudio.addEventListener('timeupdate', syncMusicProgress);
   bgAudio.addEventListener('loadedmetadata', syncMusicProgress);
   memoriesAudio.addEventListener('timeupdate', syncMusicProgress);
   memoriesAudio.addEventListener('loadedmetadata', syncMusicProgress);
   beforeYouAudio.addEventListener('timeupdate', syncMusicProgress);
   beforeYouAudio.addEventListener('loadedmetadata', syncMusicProgress);
+  blueAudio.addEventListener('timeupdate', syncMusicProgress);
+  blueAudio.addEventListener('loadedmetadata', syncMusicProgress);
+  herAudio.addEventListener('timeupdate', syncMusicProgress);
+  herAudio.addEventListener('loadedmetadata', syncMusicProgress);
+  photographAudio.addEventListener('timeupdate', syncMusicProgress);
+  photographAudio.addEventListener('loadedmetadata', syncMusicProgress);
+  sayYouWontLetGoAudio.addEventListener('timeupdate', syncMusicProgress);
+  sayYouWontLetGoAudio.addEventListener('loadedmetadata', syncMusicProgress);
+  rewriteTheStarsAudio.addEventListener('timeupdate', syncMusicProgress);
+  rewriteTheStarsAudio.addEventListener('loadedmetadata', syncMusicProgress);
   bgAudio.addEventListener('ended', playNextTrack);
   memoriesAudio.addEventListener('ended', playNextTrack);
   beforeYouAudio.addEventListener('ended', playNextTrack);
+  blueAudio.addEventListener('ended', playNextTrack);
+  herAudio.addEventListener('ended', playNextTrack);
+  photographAudio.addEventListener('ended', playNextTrack);
+  sayYouWontLetGoAudio.addEventListener('ended', playNextTrack);
+  rewriteTheStarsAudio.addEventListener('ended', playNextTrack);
   document.getElementById('music-progress').addEventListener('input', (event) => {
     const audio = getActiveMusicAudio();
     if (!audio.duration) return;
@@ -955,6 +1158,7 @@
     document.getElementById('music-cover').style.display = 'none';
     document.getElementById('music-cover-fallback').style.display = 'grid';
   });
+  renderLyricsRoll();
   attemptAutoStart();
   setupFirstInteractionAutoplayRetry();
 
