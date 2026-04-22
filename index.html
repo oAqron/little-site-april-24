@@ -469,6 +469,10 @@
   <!-- Replace src with your song file or URL -->
   <source src="your-song.mp3" type="audio/mpeg"/>
 </audio>
+<!-- Memories page: You and I — One Direction (add MP3 next to index.html) -->
+<audio id="memories-music" loop preload="metadata">
+  <source src="you-and-i-one-direction.mp3" type="audio/mpeg"/>
+</audio>
 
 <!-- ══════════ HOME ══════════ -->
 <section id="home" class="page active">
@@ -641,11 +645,36 @@
 
 <script>
   // ─── PAGE NAVIGATION ───
+  const bgAudio = document.getElementById('bg-music');
+  const memoriesAudio = document.getElementById('memories-music');
+
   function showPage(id, linkEl) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
     if (linkEl) linkEl.classList.add('active');
+
+    if (id === 'memories') {
+      bgAudio.pause();
+      memoriesAudio.play().catch(() => {});
+    } else {
+      memoriesAudio.pause();
+    }
+    syncMusicButton();
+  }
+
+  function getActiveMusicAudio() {
+    return document.getElementById('memories').classList.contains('active')
+      ? memoriesAudio
+      : bgAudio;
+  }
+
+  function syncMusicButton() {
+    const audio = getActiveMusicAudio();
+    const btn = document.getElementById('music-btn');
+    const playing = !audio.paused;
+    btn.textContent = playing ? '♫' : '♪';
+    btn.classList.toggle('playing', playing);
   }
 
   // ─── COUNTER ───
@@ -682,19 +711,21 @@
   }
 
   // ─── MUSIC ───
-  const audio = document.getElementById('bg-music');
-  const btn   = document.getElementById('music-btn');
+  const btn = document.getElementById('music-btn');
   function toggleMusic() {
+    const audio = getActiveMusicAudio();
     if (audio.paused) {
       audio.play().catch(() => {});
-      btn.textContent = '♫';
-      btn.classList.add('playing');
     } else {
       audio.pause();
-      btn.textContent = '♪';
-      btn.classList.remove('playing');
     }
+    syncMusicButton();
   }
+
+  bgAudio.addEventListener('play', syncMusicButton);
+  bgAudio.addEventListener('pause', syncMusicButton);
+  memoriesAudio.addEventListener('play', syncMusicButton);
+  memoriesAudio.addEventListener('pause', syncMusicButton);
 
   // ─── LIGHTBOX ───
   function openLightbox(polaroidEl) {
