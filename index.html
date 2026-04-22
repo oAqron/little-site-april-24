@@ -588,11 +588,14 @@
   </div>
 </div>
 <audio id="bg-music" loop preload="metadata">
-  <source src="your-song.mp3" type="audio/mpeg"/>
+  <source src="like-the-rain.mp3" type="audio/mpeg"/>
 </audio>
 <!-- Memories page: You and I — One Direction (add MP3 next to index.html) -->
 <audio id="memories-music" loop preload="metadata">
   <source src="you-and-i-one-direction.mp3" type="audio/mpeg"/>
+</audio>
+<audio id="before-you-music" loop preload="metadata">
+  <source src="before-you.mp3" type="audio/mpeg"/>
 </audio>
 
 <!-- ══════════ HOME ══════════ -->
@@ -768,19 +771,26 @@
   // ─── PAGE NAVIGATION ───
   const bgAudio = document.getElementById('bg-music');
   const memoriesAudio = document.getElementById('memories-music');
+  const beforeYouAudio = document.getElementById('before-you-music');
 
   const tracks = [
     {
       audio: bgAudio,
-      title: 'Our Song',
-      artist: 'For Us',
-      cover: 'our-song-cover.jpg'
+      title: 'Like the Rain',
+      artist: 'Your playlist',
+      cover: 'alexs.jpg'
     },
     {
       audio: memoriesAudio,
       title: 'You and I',
       artist: 'One Direction',
-      cover: 'you-and-i-cover.jpg'
+      cover: 'oned.jpg'
+    },
+    {
+      audio: beforeYouAudio,
+      title: 'Before You',
+      artist: 'Benson Boone',
+      cover: 'bensonb.jpg'
     }
   ];
   let activeTrackIndex = 0;
@@ -795,9 +805,13 @@
     document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
     if (linkEl) linkEl.classList.add('active');
 
-    const nextIndex = id === 'memories' ? 1 : 0;
-    const shouldResume = !getActiveMusicAudio().paused;
-    setActiveTrack(nextIndex, shouldResume);
+    if (id === 'memories' && activeTrackIndex !== 1) {
+      const shouldResume = !getActiveMusicAudio().paused;
+      setActiveTrack(1, shouldResume);
+      return;
+    }
+    syncMusicButton();
+    syncMusicProgress();
   }
 
   function formatTime(seconds) {
@@ -903,10 +917,14 @@
   bgAudio.addEventListener('pause', syncMusicButton);
   memoriesAudio.addEventListener('play', syncMusicButton);
   memoriesAudio.addEventListener('pause', syncMusicButton);
+  beforeYouAudio.addEventListener('play', syncMusicButton);
+  beforeYouAudio.addEventListener('pause', syncMusicButton);
   bgAudio.addEventListener('timeupdate', syncMusicProgress);
   bgAudio.addEventListener('loadedmetadata', syncMusicProgress);
   memoriesAudio.addEventListener('timeupdate', syncMusicProgress);
   memoriesAudio.addEventListener('loadedmetadata', syncMusicProgress);
+  beforeYouAudio.addEventListener('timeupdate', syncMusicProgress);
+  beforeYouAudio.addEventListener('loadedmetadata', syncMusicProgress);
   document.getElementById('music-progress').addEventListener('input', (event) => {
     const audio = getActiveMusicAudio();
     if (!audio.duration) return;
