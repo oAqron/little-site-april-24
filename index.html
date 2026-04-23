@@ -528,9 +528,10 @@
       color: var(--accent);
     }
     .letter-body {
-      font-family: 'Lora', serif;
-      font-size: 1.1rem;
-      line-height: 1.9;
+      font-family: 'Caveat', cursive;
+      font-size: 1.55rem;
+      line-height: 1.55;
+      letter-spacing: 0.01em;
       color: var(--text);
       /* lined paper effect */
       background-image: repeating-linear-gradient(
@@ -647,6 +648,14 @@
       font-size: 0.9rem;
       color: var(--muted);
       line-height: 1.6;
+    }
+    .memory-video {
+      width: 100%;
+      margin-top: 0.65rem;
+      border-radius: 12px;
+      border: 1px solid rgba(212,167,47,0.25);
+      box-shadow: 0 6px 18px rgba(95,76,42,0.14);
+      background: rgba(255,255,255,0.35);
     }
 
     @keyframes slideIn {
@@ -860,19 +869,19 @@
           Happy Four months!! I wish you could read this letter physically but making this website in of itself was really fun because I love making things for you.
         </p>
         <p class="letter-roll-line">
-          Being apart right now feels a bit distant, but I don't think that distance, nor our decision, will change how I feel towards you. If in any way I do change, it'll be that I'm going to cherish you even more because I want to savor every second we have left, and because I want do my best to make you smile while im still able to before we go to college.
+          Being apart right now feels a bit distant, but I don't think that distance, nor our decision, will change how I feel or approach this summer. If in any way I do change, it'll be that I'm going to cherish you even more because I want to savor every second we have left, and because I want do my best to make you smile while im still able to before we go to college.
         </p>
         <p class="letter-roll-line">
-          I love the way you made me laugh (but also a little scared) when you took the wrong train on your way back to Boston. The way you vibed to any background music you hear. And the way you'd make every moment we spend together into a core memory regardless of what we're doing.
+          I love the way you made me laugh (but also a little scared) when you took the wrong train on your way back to Boston. I love the way you'd vibe to any music and song you hear. And I love the way you make every moment we spend together into a core memory, regardless of what we're doing.
         </p>
         <p class="letter-roll-line">
-          I love how we can support and pray for the best for each other. How we can talk about the most brainless but also most meaningful reflections. And how we're able remind each other to see the world in a brighter light and perspectives at times.
+          I love how we can support and pray for the best for each other, how we can talk about the most brainless but also most meaningful reflections, and how we're able to remind each other to see the world in a brighter light and perspectives at times.
         </p>
         <p class="letter-roll-line">
           There's still so much ahead of us in college, and I'm so excited for you to meet all the amazing people at Boston. I don't know what will happen later on, but I know that I would always want to revisit this in a later time. But if you do stumble upon a church-going old-money-wearing cybertruck-driving gym-going marathon-running YC-funding Asian startup founder at the Harvard swimming facility, that's okay too.
         </p>
         <p class="letter-roll-line">
-          But regardless, I'm still going to keep praying for you, rooting for you, and cheering you on, every single day.
+          No matter what happens, I'm still going to keep praying for you, keep rooting for you, and keep cheering you on, every single day.
         </p>
         <p class="letter-roll-line">
           Thank you for letting me be the one to take care of you, to be the shoulder you can rest on during a long flight, and to be your guardian angel whether it's going to Dunkin' or CVS or the airport.
@@ -905,38 +914,54 @@
       <div class="memory-card">
         <div class="memory-card-emoji">🏀</div>
         <p class="memory-card-title">hooper sophie</p>
+        <video class="memory-video" controls playsinline preload="metadata">
+          <source src="assets/videos/basketball.MOV" type="video/mp4"/>
+        </video>
       </div>
     </div>
     <div class="memory-item">
       <div class="memory-card">
         <div class="memory-card-emoji">🎄</div>
         <p class="memory-card-title">the sweetest moment</p>
+        <video class="memory-video" controls playsinline preload="metadata">
+          <source src="assets/videos/day0.MOV" type="video/mp4"/>
+        </video>
       </div>
     </div>
     <div class="memory-item">
       <div class="memory-card">
         <div class="memory-card-emoji">🚗</div>
         <p class="memory-card-title">car vlog</p>
-        </div>
+        <video class="memory-video" controls playsinline preload="metadata">
+          <source src="assets/videos/carvlo.MOV" type="video/mp4"/>
+        </video>
+      </div>
     </div>
     <div class="memory-item">
       <div class="memory-card">
         <div class="memory-card-emoji">🪩</div>
         <p class="memory-card-title">that moment you looked at me</p>
+        <video class="memory-video" controls playsinline preload="metadata">
+          <source src="assets/videos/classdance.mov" type="video/mp4"/>
+        </video>
       </div>
     </div>
-  </div>
     <div class="memory-item">
       <div class="memory-card">
         <div class="memory-card-emoji">🍎</div>
         <p class="memory-card-title">sophie fruit cutting masterclass</p>
-        </div>
+        <video class="memory-video" controls playsinline preload="metadata">
+          <source src="assets/videos/cuttingclass.MOV" type="video/mp4"/>
+        </video>
+      </div>
     </div>
-  </div>
-  <div class="memory-item">
-    <div class="memory-card">
-      <div class="memory-card-emoji">💃</div>
-      <p class="memory-card-title">vibester</p>
+    <div class="memory-item">
+      <div class="memory-card">
+        <div class="memory-card-emoji">💃</div>
+        <p class="memory-card-title">vibester</p>
+        <video class="memory-video" controls playsinline preload="metadata">
+          <source src="assets/videos/vibey.MOV" type="video/mp4"/>
+        </video>
       </div>
     </div>
   </div>
@@ -1259,35 +1284,8 @@
   function startLetterRoll() {
     if (letterPage.classList.contains('letter-roll-done')) return;
     const lines = letterPage.querySelectorAll('.letter-reveal .letter-roll-line');
-    let lineIndex = 0;
-
-    function typeLine(lineEl, done) {
-      const full = lineEl.textContent.replace(/\s+/g, ' ').trim();
-      lineEl.textContent = '';
-      lineEl.classList.add('is-visible');
-      let charIndex = 0;
-      const tick = setInterval(() => {
-        charIndex += 1;
-        lineEl.textContent = full.slice(0, charIndex);
-        if (charIndex >= full.length) {
-          clearInterval(tick);
-          setTimeout(done, 320);
-        }
-      }, 24);
-    }
-
-    function nextLine() {
-      if (lineIndex >= lines.length) {
-        letterPage.classList.add('letter-roll-done');
-        return;
-      }
-      typeLine(lines[lineIndex], () => {
-        lineIndex += 1;
-        nextLine();
-      });
-    }
-
-    nextLine();
+    lines.forEach((line) => line.classList.add('is-visible'));
+    letterPage.classList.add('letter-roll-done');
   }
 
   function onTeddyTap(event) {
