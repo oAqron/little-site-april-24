@@ -65,7 +65,11 @@
       display: flex;
       align-items: center;
       gap: 0.8rem;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
     }
+    .music-player.dragging .music-top { cursor: grabbing; }
     .music-cover-wrap {
       width: 60px;
       height: 60px;
@@ -137,6 +141,20 @@
     }
     .music-progress-wrap {
       margin-top: 0.75rem;
+    }
+    .music-volume-wrap {
+      margin-top: 0.55rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Caveat', cursive;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    #music-volume {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
     }
     #music-progress {
       width: 100%;
@@ -731,6 +749,10 @@
       <span id="music-duration">0:00</span>
     </div>
   </div>
+  <div class="music-volume-wrap">
+    <span>🔊</span>
+    <input id="music-volume" type="range" min="0" max="1" value="0.75" step="0.01" aria-label="Volume"/>
+  </div>
 </div>
 <audio id="bg-music" preload="metadata">
   <source src="assets/music/like-the-rain.mp3" type="audio/mpeg"/>
@@ -957,6 +979,15 @@
     </div>
     <div class="memory-item">
       <div class="memory-card">
+        <div class="memory-card-emoji">💨</div>
+        <p class="memory-card-title">one of our many many runs</p>
+        <video class="memory-video" controls playsinline preload="metadata">
+          <source src="assets/videos/run.mp4" type="video/mp4"/>
+        </video>
+      </div>
+    </div>
+    <div class="memory-item">
+      <div class="memory-card">
         <div class="memory-card-emoji">💃</div>
         <p class="memory-card-title">vibester</p>
         <video class="memory-video" controls playsinline preload="metadata">
@@ -1136,7 +1167,16 @@
   setInterval(updateCounter, 60000);
 
   // ─── HOME SLIDESHOW ───
-  const homeSlideImages = ['assets/photos/album-covers/alexs.jpg', 'assets/photos/album-covers/oned.jpg', 'assets/photos/album-covers/bensonb.jpg', 'assets/photos/album-covers/jvke.jpg', 'assets/photos/album-covers/yungk.jpg', 'assets/photos/album-covers/eds.jpg', 'assets/photos/album-covers/jamesa.jpg', 'assets/photos/album-covers/zac.jpg'];
+  const homeSlideImages = [
+    'assets/photos/sophie-us/51b135d2-d286-4a09-9557-6622eaca6616.JPG',
+    'assets/photos/sophie-us/DSC02750.JPG',
+    'assets/photos/sophie-us/IMG_0963.jpg',
+    'assets/photos/sophie-us/90CB6999-0372-48E8-AE7A-8E9994DBD5CD.JPG',
+    'assets/photos/sophie-us/36f1f73d-38d0-43e4-94e1-8515648b2c43.JPG',
+    'assets/photos/sophie-us/IMG_6145.JPG',
+    'assets/photos/sophie-us/DSC00448.JPG',
+    'assets/photos/sophie-us/9ff792a0-d486-482a-a4ff-96eeedf82f26.JPG'
+  ];
   const homeSlideshowEl = document.getElementById('home-slideshow');
   let homeSlideIndex = 0;
   let homeSlideTimer = null;
@@ -1182,6 +1222,11 @@
     }
     syncMusicButton();
     syncMusicProgress();
+  }
+
+  function setGlobalVolume(value) {
+    const volume = Math.min(1, Math.max(0, value));
+    tracks.forEach((track) => { track.audio.volume = volume; });
   }
 
   bgAudio.addEventListener('play', syncMusicButton);
@@ -1235,8 +1280,57 @@
     document.getElementById('music-cover').style.display = 'none';
     document.getElementById('music-cover-fallback').style.display = 'grid';
   });
+  document.getElementById('music-volume').addEventListener('input', (event) => {
+    setGlobalVolume(Number(event.target.value));
+  });
+  setGlobalVolume(Number(document.getElementById('music-volume').value));
   attemptAutoStart();
   setupFirstInteractionAutoplayRetry();
+
+  // ─── MUSIC PLAYER DRAG ───
+  const musicPlayer = document.querySelector('.music-player');
+  const musicTop = document.querySelector('.music-top');
+  let dragState = null;
+
+  function startDrag(event) {
+    if (!musicPlayer || !musicTop) return;
+    if (event.button !== undefined && event.button !== 0) return;
+    const rect = musicPlayer.getBoundingClientRect();
+    dragState = {
+      offsetX: event.clientX - rect.left,
+      offsetY: event.clientY - rect.top
+    };
+    musicPlayer.classList.add('dragging');
+    musicTop.setPointerCapture?.(event.pointerId);
+  }
+
+  function onDrag(event) {
+    if (!dragState || !musicPlayer) return;
+    const width = musicPlayer.offsetWidth;
+    const height = musicPlayer.offsetHeight;
+    const nextLeft = Math.min(window.innerWidth - width - 8, Math.max(8, event.clientX - dragState.offsetX));
+    const nextTop = Math.min(window.innerHeight - height - 8, Math.max(8, event.clientY - dragState.offsetY));
+    musicPlayer.style.left = `${nextLeft}px`;
+    musicPlayer.style.top = `${nextTop}px`;
+    musicPlayer.style.right = 'auto';
+    musicPlayer.style.bottom = 'auto';
+  }
+
+  function endDrag(event) {
+    if (!dragState || !musicPlayer || !musicTop) return;
+    dragState = null;
+    musicPlayer.classList.remove('dragging');
+    if (event && event.pointerId !== undefined) {
+      musicTop.releasePointerCapture?.(event.pointerId);
+    }
+  }
+
+  if (musicTop) {
+    musicTop.addEventListener('pointerdown', startDrag);
+    window.addEventListener('pointermove', onDrag);
+    window.addEventListener('pointerup', endDrag);
+    window.addEventListener('pointercancel', endDrag);
+  }
 
   // ─── TEDDY → LETTER EASTER EGG ───
   const letterPage = document.getElementById('letter');
