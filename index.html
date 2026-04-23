@@ -172,6 +172,27 @@
       overflow: hidden;
     }
     #home.active { display: flex; }
+    .home-slideshow {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .home-slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transform: scale(1.06);
+      transition: opacity 1.8s ease, transform 6s ease;
+      filter: saturate(0.9) brightness(0.95);
+    }
+    .home-slide.active {
+      opacity: 0.24;
+      transform: scale(1);
+    }
 
     /* floating petals */
     .petal {
@@ -526,11 +547,12 @@
     .letter-roll-line {
       opacity: 0;
       transform: translateY(-22px);
-      transition: opacity 0.55s ease, transform 0.55s ease;
+      white-space: pre-wrap;
     }
     .letter-roll-line.is-visible {
       opacity: 1;
       transform: translateY(0);
+      transition: opacity 0.45s ease, transform 0.45s ease;
     }
     #letter.letter-roll-done .letter-roll-line {
       opacity: 1;
@@ -671,9 +693,9 @@
 <!-- NAV -->
 <nav>
   <a href="#" class="active" onclick="showPage('home',this)">🏠 Home</a>
-  <a href="#" onclick="showPage('photos',this)">📸 Us</a>
-  <a href="#" onclick="showPage('letter',this)">💌 Letter</a>
-  <a href="#" onclick="showPage('memories',this)">✨ Memories</a>
+  <a href="#" onclick="showPage('photos',this)">📸 flicks!!</a>
+  <a href="#" onclick="showPage('letter',this)">🐻 Bear</a>
+  <a href="#" onclick="showPage('memories',this)">✨ Mems</a>
 </nav>
 
 <!-- MUSIC PLAYER -->
@@ -729,6 +751,7 @@
 
 <!-- ══════════ HOME ══════════ -->
 <section id="home" class="page active">
+  <div class="home-slideshow" id="home-slideshow"></div>
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
   <div class="blob blob-3"></div>
@@ -845,20 +868,20 @@
         </p>
         <p class="letter-roll-line">
           Being apart right now is one of the hardest things I've felt in a while. But every time I
-          feel that distance, I also feel how <em>real</em> this is — how much you mean to me. Distance
+          feel that distance, I also feel how real this is — how much you mean to me. Distance
           just made that clearer.
         </p>
         <p class="letter-roll-line">
           I made this little corner of the internet because I wanted you to have something to hold onto.
-          Something that says: <em>I'm thinking about you. I'm proud of us. I can't wait to see you again.</em>
+          Something that says: I'm thinking about you. I'm proud of us. I can't wait to see you again.
         </p>
         <p class="letter-roll-line">
           Thank you for being exactly who you are. Thank you for choosing me, every single day.
         </p>
 
-        <div class="letter-roll-line letter-sign">
-          <p class="letter-sign-name">I love you, always ♡</p>
-          <p class="letter-sign-date">Aaron · April 24, 2026</p>
+        <div class="letter-sign">
+          <p class="letter-sign-name letter-roll-line">I love you, always ♡</p>
+          <p class="letter-sign-date letter-roll-line">Aaron · April 24, 2026</p>
         </div>
       </div>
     </div>
@@ -1079,6 +1102,26 @@
   updateCounter();
   setInterval(updateCounter, 60000);
 
+  // ─── HOME SLIDESHOW ───
+  const homeSlideImages = ['alexs.jpg', 'oned.jpg', 'bensonb.jpg', 'jvke.jpg', 'yungk.jpg', 'eds.jpg', 'jamesa.jpg', 'zac.jpg'];
+  const homeSlideshowEl = document.getElementById('home-slideshow');
+  let homeSlideIndex = 0;
+  let homeSlideTimer = null;
+
+  function initHomeSlideshow() {
+    if (!homeSlideshowEl) return;
+    homeSlideshowEl.innerHTML = homeSlideImages.map((src, idx) =>
+      `<div class="home-slide${idx === 0 ? ' active' : ''}" style="background-image: url('${src}');"></div>`
+    ).join('');
+    const slides = Array.from(homeSlideshowEl.querySelectorAll('.home-slide'));
+    if (slides.length < 2) return;
+    homeSlideTimer = setInterval(() => {
+      slides[homeSlideIndex].classList.remove('active');
+      homeSlideIndex = (homeSlideIndex + 1) % slides.length;
+      slides[homeSlideIndex].classList.add('active');
+    }, 5200);
+  }
+
   // ─── FALLING PETALS ───
   const petals = ['🌼','🌻','🌼','🌻','❀','✿'];
   const homeEl = document.getElementById('home');
@@ -1208,12 +1251,35 @@
   function startLetterRoll() {
     if (letterPage.classList.contains('letter-roll-done')) return;
     const lines = letterPage.querySelectorAll('.letter-reveal .letter-roll-line');
-    lines.forEach((line, i) => {
-      setTimeout(() => line.classList.add('is-visible'), 220 + i * 880);
-    });
-    setTimeout(() => {
-      letterPage.classList.add('letter-roll-done');
-    }, 220 + lines.length * 880 + 700);
+    let lineIndex = 0;
+
+    function typeLine(lineEl, done) {
+      const full = lineEl.textContent.replace(/\s+/g, ' ').trim();
+      lineEl.textContent = '';
+      lineEl.classList.add('is-visible');
+      let charIndex = 0;
+      const tick = setInterval(() => {
+        charIndex += 1;
+        lineEl.textContent = full.slice(0, charIndex);
+        if (charIndex >= full.length) {
+          clearInterval(tick);
+          setTimeout(done, 320);
+        }
+      }, 24);
+    }
+
+    function nextLine() {
+      if (lineIndex >= lines.length) {
+        letterPage.classList.add('letter-roll-done');
+        return;
+      }
+      typeLine(lines[lineIndex], () => {
+        lineIndex += 1;
+        nextLine();
+      });
+    }
+
+    nextLine();
   }
 
   function onTeddyTap(event) {
@@ -1242,6 +1308,7 @@
     teddyBear.addEventListener('keydown', onTeddyTap);
   }
   updateTeddyHint();
+  initHomeSlideshow();
 
   // ─── LIGHTBOX ───
   function openLightbox(polaroidEl) {
