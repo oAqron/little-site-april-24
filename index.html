@@ -53,8 +53,8 @@
       right: 1.2rem;
       bottom: 1.2rem;
       z-index: 220;
-      width: min(370px, calc(100vw - 2rem));
-      padding: 0.9rem;
+      width: min(340px, calc(100vw - 2rem));
+      padding: 0.8rem;
       border-radius: 20px;
       border: 1px solid rgba(255,255,255,0.45);
       background: linear-gradient(145deg, rgba(255,253,242,0.74), rgba(255,244,199,0.62));
@@ -151,45 +151,6 @@
       font-size: 0.95rem;
       color: var(--muted);
       letter-spacing: 0.02em;
-    }
-    .lyrics-wrap {
-      margin-top: 0.7rem;
-      padding: 0.55rem 0.65rem;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.45);
-      border: 1px solid rgba(255,255,255,0.5);
-    }
-    .lyrics-label {
-      font-family: 'Caveat', cursive;
-      font-size: 0.95rem;
-      color: var(--muted);
-      margin-bottom: 0.3rem;
-    }
-    .lyrics-viewport {
-      height: 70px;
-      overflow: hidden;
-      position: relative;
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
-      mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
-    }
-    .lyrics-roll {
-      transition: transform 0.65s ease;
-    }
-    .lyrics-line {
-      min-height: 24px;
-      line-height: 24px;
-      font-family: 'Lora', serif;
-      font-size: 0.83rem;
-      color: var(--muted);
-      opacity: 0.55;
-      transition: opacity 0.25s ease, color 0.25s ease;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .lyrics-line.active {
-      color: var(--text);
-      opacity: 1;
     }
 
     /* ─── PAGES ─── */
@@ -428,11 +389,94 @@
     }
 
     /* ════════════════════════════════
-       LETTER PAGE
+       LETTER PAGE (teddy gate + letter reveal)
     ════════════════════════════════ */
     #letter {
       background: var(--cream);
       min-height: 100vh;
+      position: relative;
+    }
+    #letter .teddy-stage {
+      min-height: calc(100vh - 70px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem 1.5rem 4rem;
+      background: linear-gradient(180deg, var(--cream) 0%, var(--blush) 100%);
+    }
+    #letter.popped .teddy-stage { display: none; }
+    .letter-reveal { display: none; }
+    #letter.popped .letter-reveal { display: block; }
+    .teddy-wrap {
+      max-width: 760px;
+      width: 100%;
+      padding: 2rem 1.5rem;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 12px 36px rgba(95,76,42,0.12);
+      backdrop-filter: blur(6px);
+    }
+    .teddy-title {
+      font-family: 'Caveat', cursive;
+      color: var(--accent);
+      font-size: 2rem;
+      margin-bottom: 0.8rem;
+    }
+    .teddy-bear-wrap {
+      display: inline-block;
+      cursor: pointer;
+      transition: transform 0.22s ease;
+      transform-origin: center bottom;
+    }
+    .teddy-bear {
+      font-size: clamp(8rem, 32vw, 16rem);
+      line-height: 1;
+      display: inline-block;
+      filter: drop-shadow(0 10px 20px rgba(95,76,42,0.22));
+      animation: teddyFloat 2.8s ease-in-out infinite;
+      user-select: none;
+    }
+    .teddy-note {
+      font-family: 'Lora', serif;
+      color: var(--muted);
+      font-size: 1rem;
+      margin-top: 0.9rem;
+    }
+    .teddy-tap-hint {
+      font-family: 'Caveat', cursive;
+      color: var(--accent);
+      font-size: 1.15rem;
+      margin-top: 0.5rem;
+      opacity: 0.85;
+    }
+    .confetti-root {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 400;
+    }
+    .confetti-piece {
+      position: fixed;
+      transform: translate(-50%, -50%);
+      animation: confettiBurst 1.05s ease-out forwards;
+      font-size: 1.25rem;
+    }
+    @keyframes confettiBurst {
+      to {
+        transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(540deg);
+        opacity: 0;
+      }
+    }
+    .letter-roll-line {
+      opacity: 0;
+      transform: translateY(-16px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .letter-roll-line.is-visible {
+      opacity: 1;
+      transform: translateY(0);
     }
     .letter-wrap {
       max-width: 720px;
@@ -557,49 +601,6 @@
       line-height: 1.6;
     }
 
-    /* ════════════════════════════════
-       TEDDY PAGE
-    ════════════════════════════════ */
-    #teddy {
-      background: linear-gradient(180deg, var(--cream) 0%, var(--blush) 100%);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 6rem 1.5rem 4rem;
-      min-height: 100vh;
-    }
-    #teddy.active { display: flex; }
-    .teddy-wrap {
-      max-width: 760px;
-      width: 100%;
-      padding: 2rem 1.5rem;
-      border-radius: 28px;
-      background: rgba(255,255,255,0.5);
-      border: 1px solid rgba(255,255,255,0.6);
-      box-shadow: 0 12px 36px rgba(95,76,42,0.12);
-      backdrop-filter: blur(6px);
-    }
-    .teddy-title {
-      font-family: 'Caveat', cursive;
-      color: var(--accent);
-      font-size: 2rem;
-      margin-bottom: 0.8rem;
-    }
-    .teddy-bear {
-      font-size: clamp(8rem, 32vw, 16rem);
-      line-height: 1;
-      display: inline-block;
-      filter: drop-shadow(0 10px 20px rgba(95,76,42,0.22));
-      animation: teddyFloat 2.8s ease-in-out infinite;
-    }
-    .teddy-note {
-      font-family: 'Lora', serif;
-      color: var(--muted);
-      font-size: 1rem;
-      margin-top: 0.9rem;
-    }
-
     @keyframes slideIn {
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -647,7 +648,6 @@
   <a href="#" onclick="showPage('photos',this)">📸 Us</a>
   <a href="#" onclick="showPage('letter',this)">💌 Letter</a>
   <a href="#" onclick="showPage('memories',this)">✨ Memories</a>
-  <a href="#" onclick="showPage('teddy',this)">🧸 Teddy</a>
 </nav>
 
 <!-- MUSIC PLAYER -->
@@ -672,12 +672,6 @@
     <div class="music-time">
       <span id="music-current-time">0:00</span>
       <span id="music-duration">0:00</span>
-    </div>
-  </div>
-  <div class="lyrics-wrap">
-    <p class="lyrics-label">live lyrics</p>
-    <div class="lyrics-viewport">
-      <div id="lyrics-roll" class="lyrics-roll"></div>
     </div>
   </div>
 </div>
@@ -789,42 +783,63 @@
   <img id="lightbox-img" src="" alt=""/>
 </div>
 
-<!-- ══════════ LETTER ══════════ -->
+<!-- ══════════ LETTER (teddy → confetti → letter) ══════════ -->
 <section id="letter" class="page">
-  <div class="letter-wrap">
-    <div class="letter-header">
-      <span class="letter-decoration">🌷</span>
-      <p class="page-label">letter!</p>
-      <p class="letter-to">dear sophie,</p>
+  <div class="teddy-stage" id="teddy-stage">
+    <div class="teddy-wrap">
+      <p class="teddy-title">a giant teddy hug for sophie</p>
+      <div class="teddy-bear-wrap" id="teddy-bear-wrap">
+        <div
+          class="teddy-bear"
+          id="teddy-bear"
+          role="button"
+          tabindex="0"
+          aria-label="Teddy bear — tap ten times"
+          onclick="onTeddyTap()"
+          onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); onTeddyTap(); }"
+        >🧸</div>
+      </div>
+      <p class="teddy-note">for when you need an extra-soft cuddle ♡</p>
+      <p class="teddy-tap-hint" id="teddy-tap-hint">tap the teddy ten times…</p>
     </div>
+  </div>
 
-    <div class="letter-body">
-      <p>
-        Four months. It sounds so small when you say it out loud, but when I think about everything
-        those four months hold — every laugh, every late-night call, every little moment I've saved
-        in my heart — it feels like a whole world we've built together.
-      </p>
-      <p>
-        I don't think you know how often I think about you. It happens quietly, in the middle of
-        ordinary things — when a song comes on, when I see something funny and immediately want to
-        tell you, when I'm half-asleep and your voice is the last thing I'm thinking about.
-      </p>
-      <p>
-        Being apart right now is one of the hardest things I've felt in a while. But every time I
-        feel that distance, I also feel how <em>real</em> this is — how much you mean to me. Distance
-        just made that clearer.
-      </p>
-      <p>
-        I made this little corner of the internet because I wanted you to have something to hold onto.
-        Something that says: <em>I'm thinking about you. I'm proud of us. I can't wait to see you again.</em>
-      </p>
-      <p>
-        Thank you for being exactly who you are. Thank you for choosing me, every single day.
-      </p>
+  <div class="letter-reveal" id="letter-reveal" hidden>
+    <div class="letter-wrap">
+      <div class="letter-header">
+        <span class="letter-decoration letter-roll-line">🌷</span>
+        <p class="page-label letter-roll-line">letter!</p>
+        <p class="letter-to letter-roll-line">dear sophie,</p>
+      </div>
 
-      <div class="letter-sign">
-        <p class="letter-sign-name">I love you, always ♡</p>
-        <p class="letter-sign-date">Aaron · April 24, 2026</p>
+      <div class="letter-body">
+        <p class="letter-roll-line">
+          Four months. It sounds so small when you say it out loud, but when I think about everything
+          those four months hold — every laugh, every late-night call, every little moment I've saved
+          in my heart — it feels like a whole world we've built together.
+        </p>
+        <p class="letter-roll-line">
+          I don't think you know how often I think about you. It happens quietly, in the middle of
+          ordinary things — when a song comes on, when I see something funny and immediately want to
+          tell you, when I'm half-asleep and your voice is the last thing I'm thinking about.
+        </p>
+        <p class="letter-roll-line">
+          Being apart right now is one of the hardest things I've felt in a while. But every time I
+          feel that distance, I also feel how <em>real</em> this is — how much you mean to me. Distance
+          just made that clearer.
+        </p>
+        <p class="letter-roll-line">
+          I made this little corner of the internet because I wanted you to have something to hold onto.
+          Something that says: <em>I'm thinking about you. I'm proud of us. I can't wait to see you again.</em>
+        </p>
+        <p class="letter-roll-line">
+          Thank you for being exactly who you are. Thank you for choosing me, every single day.
+        </p>
+
+        <div class="letter-sign">
+          <p class="letter-sign-name letter-roll-line">I love you, always ♡</p>
+          <p class="letter-sign-date letter-roll-line">Aaron · April 24, 2026</p>
+        </div>
       </div>
     </div>
   </div>
@@ -873,15 +888,6 @@
         <p class="memory-card-desc">Miles apart, but this is proof — you're on my mind every single day.</p>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- ══════════ TEDDY ══════════ -->
-<section id="teddy" class="page">
-  <div class="teddy-wrap">
-    <p class="teddy-title">a giant teddy hug for sophie</p>
-    <div class="teddy-bear" aria-label="Teddy bear">🧸</div>
-    <p class="teddy-note">for when you need an extra-soft cuddle ♡</p>
   </div>
 </section>
 
@@ -947,88 +953,84 @@
     }
   ];
   let activeTrackIndex = 0;
-  const lyricLineHeight = 24;
-  const lyricTimelines = [
-    [
-      { time: 0, text: 'Rain on the window, soft and slow.' },
-      { time: 9, text: 'Your name is the melody in my head.' },
-      { time: 20, text: 'Every drop feels like us tonight.' },
-      { time: 32, text: 'Heart steady, held by your smile.' }
-    ],
-    [
-      { time: 0, text: 'Two hearts, same sky.' },
-      { time: 10, text: 'Distance fades when you smile.' },
-      { time: 21, text: 'Every moment points back to you.' },
-      { time: 33, text: 'You and I, always.' }
-    ],
-    [
-      { time: 0, text: 'Quiet start, warm memory.' },
-      { time: 8, text: 'You make ordinary moments glow.' },
-      { time: 18, text: 'I stay where your voice feels close.' },
-      { time: 30, text: 'Before you, I never knew this peace.' }
-    ],
-    [
-      { time: 0, text: 'Blue sky, slow breath.' },
-      { time: 11, text: 'I keep your laugh in my pocket.' },
-      { time: 22, text: 'Everything softer when you are near.' },
-      { time: 34, text: 'The whole day turns bright for you.' }
-    ],
-    [
-      { time: 0, text: 'A single look and I am home.' },
-      { time: 10, text: 'Your heartbeat writes the rhythm.' },
-      { time: 21, text: 'I hear forever in a whisper.' },
-      { time: 34, text: 'Every verse points back to us.' }
-    ],
-    [
-      { time: 0, text: 'Small moments become golden.' },
-      { time: 9, text: 'Snapshots of us, soft and true.' },
-      { time: 20, text: 'I keep every smile like treasure.' },
-      { time: 32, text: 'Love stays in the little details.' }
-    ],
-    [
-      { time: 0, text: 'Hold this second, hold this hand.' },
-      { time: 11, text: 'Promise tucked between each breath.' },
-      { time: 22, text: 'No matter the miles, I choose you.' },
-      { time: 34, text: 'Stay with me through every season.' }
-    ],
-    [
-      { time: 0, text: 'City lights and a shared wish.' },
-      { time: 10, text: 'Two names written in the stars.' },
-      { time: 21, text: 'Dreams turn real when we are brave.' },
-      { time: 33, text: 'Rewrite the sky, just us.' }
-    ]
-  ];
 
   function getActiveMusicAudio() {
     return tracks[activeTrackIndex].audio;
   }
 
-  function getCurrentTimeline() {
-    return lyricTimelines[activeTrackIndex] || [];
-  }
+  const TEDDY_LETTER_KEY = 'teddyLetterPopped';
+  let teddyTapCount = 0;
 
-  function renderLyricsRoll() {
-    const roll = document.getElementById('lyrics-roll');
-    const timeline = getCurrentTimeline();
-    roll.innerHTML = timeline.map((line, idx) =>
-      `<p class="lyrics-line${idx === 0 ? ' active' : ''}" data-idx="${idx}">${line.text}</p>`
-    ).join('');
-    roll.style.transform = 'translateY(0)';
-  }
-
-  function syncLyrics() {
-    const timeline = getCurrentTimeline();
-    if (!timeline.length) return;
-    const current = getActiveMusicAudio().currentTime || 0;
-    let activeLine = 0;
-    for (let i = 0; i < timeline.length; i++) {
-      if (current >= timeline[i].time) activeLine = i;
+  function initLetterPage() {
+    const letter = document.getElementById('letter');
+    const reveal = document.getElementById('letter-reveal');
+    const hint = document.getElementById('teddy-tap-hint');
+    const bearWrap = document.getElementById('teddy-bear-wrap');
+    if (sessionStorage.getItem(TEDDY_LETTER_KEY) === '1') {
+      letter.classList.add('popped');
+      reveal.hidden = false;
+      reveal.querySelectorAll('.letter-roll-line').forEach((el) => el.classList.add('is-visible'));
+      if (hint) hint.style.display = 'none';
+      return;
     }
-    const roll = document.getElementById('lyrics-roll');
-    const offset = Math.max(0, activeLine - 1) * lyricLineHeight;
-    roll.style.transform = `translateY(-${offset}px)`;
-    roll.querySelectorAll('.lyrics-line').forEach((lineEl, idx) => {
-      lineEl.classList.toggle('active', idx === activeLine);
+    letter.classList.remove('popped');
+    reveal.hidden = true;
+    reveal.querySelectorAll('.letter-roll-line').forEach((el) => el.classList.remove('is-visible'));
+    teddyTapCount = 0;
+    if (bearWrap) bearWrap.style.transform = 'scale(1)';
+    if (hint) {
+      hint.style.display = '';
+      hint.textContent = 'tap the teddy ten times…';
+    }
+  }
+
+  function burstConfetti(sourceEl) {
+    const root = document.createElement('div');
+    root.className = 'confetti-root';
+    document.body.appendChild(root);
+    const rect = sourceEl.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const icons = ['🧸', '✨', '💛', '🌼', '♡', '⭐️', '🌻'];
+    for (let i = 0; i < 56; i++) {
+      const piece = document.createElement('span');
+      piece.className = 'confetti-piece';
+      piece.textContent = icons[i % icons.length];
+      const ang = Math.random() * Math.PI * 2;
+      const dist = 60 + Math.random() * 280;
+      piece.style.left = `${cx}px`;
+      piece.style.top = `${cy}px`;
+      piece.style.setProperty('--dx', `${Math.cos(ang) * dist}px`);
+      piece.style.setProperty('--dy', `${Math.sin(ang) * dist}px`);
+      root.appendChild(piece);
+    }
+    setTimeout(() => root.remove(), 1150);
+  }
+
+  function onTeddyTap() {
+    const letter = document.getElementById('letter');
+    if (letter.classList.contains('popped')) return;
+    if (sessionStorage.getItem(TEDDY_LETTER_KEY) === '1') return;
+
+    teddyTapCount += 1;
+    const wrap = document.getElementById('teddy-bear-wrap');
+    const hint = document.getElementById('teddy-tap-hint');
+    const scale = 1 + (teddyTapCount - 1) * 0.048;
+    wrap.style.transform = `scale(${Math.min(scale, 1.42)})`;
+    if (hint) hint.textContent = `${teddyTapCount} / 10 taps…`;
+
+    if (teddyTapCount < 10) return;
+
+    burstConfetti(document.getElementById('teddy-bear'));
+    sessionStorage.setItem(TEDDY_LETTER_KEY, '1');
+    letter.classList.add('popped');
+    const reveal = document.getElementById('letter-reveal');
+    reveal.hidden = false;
+    if (hint) hint.style.display = 'none';
+
+    const lines = reveal.querySelectorAll('.letter-roll-line');
+    lines.forEach((line, i) => {
+      setTimeout(() => line.classList.add('is-visible'), 200 + i * 520);
     });
   }
 
@@ -1043,6 +1045,7 @@
       setActiveTrack(1, shouldResume);
       return;
     }
+    if (id === 'letter') initLetterPage();
     syncMusicButton();
     syncMusicProgress();
   }
@@ -1069,7 +1072,6 @@
     fallbackEl.style.display = 'none';
     if (startFromBeginning) track.audio.currentTime = 0;
     if (shouldPlay) track.audio.play().catch(() => {});
-    renderLyricsRoll();
     syncMusicButton();
     syncMusicProgress();
   }
@@ -1092,7 +1094,6 @@
     progress.value = String(pct);
     currentTime.textContent = formatTime(audio.currentTime);
     duration.textContent = formatTime(total);
-    syncLyrics();
   }
 
   function playNextTrack() {
@@ -1215,7 +1216,6 @@
     document.getElementById('music-cover').style.display = 'none';
     document.getElementById('music-cover-fallback').style.display = 'grid';
   });
-  renderLyricsRoll();
   attemptAutoStart();
   setupFirstInteractionAutoplayRetry();
 
