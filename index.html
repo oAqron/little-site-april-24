@@ -1076,6 +1076,11 @@
       setActiveTrack(1, shouldResume);
       return;
     }
+    if (id === 'letter' && activeTrackIndex !== 4) {
+      const shouldResume = !getActiveMusicAudio().paused;
+      setActiveTrack(4, shouldResume, true);
+      return;
+    }
     syncMusicButton();
     syncMusicProgress();
   }
