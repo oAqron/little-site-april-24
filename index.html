@@ -330,14 +330,6 @@
     .blob-2 { width: 350px; height: 350px; background: var(--lavender); bottom: -60px; right: -80px; }
     .blob-3 { width: 280px; height: 280px; background: var(--peach);   top: 40%;   left: 60%; }
 
-    /* ════════════════════════════════
-       PHOTOS PAGE
-    ════════════════════════════════ */
-    #photos { background: var(--blush); }
-    .photos-header {
-      text-align: center;
-      padding: 3rem 2rem 2rem;
-    }
     .page-label {
       font-family: 'Caveat', cursive;
       font-size: 1rem;
@@ -353,79 +345,6 @@
       margin-top: 0.4rem;
     }
     .page-title em { font-style: italic; color: var(--accent); }
-
-    /* Polaroid grid */
-    .polaroid-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2rem;
-      padding: 2rem 3rem 4rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    .polaroid {
-      background: white;
-      padding: 12px 12px 44px;
-      box-shadow: 3px 5px 18px rgba(90,62,75,0.13);
-      transition: transform 0.3s, box-shadow 0.3s;
-      cursor: pointer;
-      position: relative;
-    }
-    .polaroid:nth-child(odd)  { transform: rotate(-2.5deg); }
-    .polaroid:nth-child(even) { transform: rotate(2deg); }
-    .polaroid:hover {
-      transform: rotate(0deg) scale(1.05) !important;
-      box-shadow: 6px 10px 32px rgba(90,62,75,0.22);
-      z-index: 10;
-    }
-    .polaroid-img {
-      width: 220px; height: 220px;
-      object-fit: cover;
-      display: block;
-      background: var(--rose);
-    }
-    /* placeholder when no real photo */
-    .polaroid-placeholder {
-      width: 220px; height: 220px;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      background: linear-gradient(135deg, var(--rose), var(--peach));
-      color: var(--accent); font-size: 2.5rem;
-    }
-    .polaroid-placeholder span {
-      font-family: 'Caveat', cursive;
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-top: 0.5rem;
-    }
-    .polaroid-caption {
-      position: absolute;
-      bottom: 10px; left: 0; right: 0;
-      text-align: center;
-      font-family: 'Caveat', cursive;
-      font-size: 1rem;
-      color: var(--muted);
-    }
-
-    /* lightbox */
-    #lightbox {
-      display: none; position: fixed; inset: 0; z-index: 500;
-      background: rgba(90,62,75,0.85);
-      align-items: center; justify-content: center;
-      backdrop-filter: blur(8px);
-    }
-    #lightbox.open { display: flex; }
-    #lightbox img {
-      max-width: 90vw; max-height: 85vh;
-      border-radius: 4px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    }
-    #lightbox-close {
-      position: absolute; top: 1.5rem; right: 2rem;
-      font-size: 2rem; color: white; cursor: pointer;
-      font-family: 'Caveat', cursive;
-    }
 
     /* ════════════════════════════════
        LETTER + TEDDY (one page)
@@ -691,8 +610,6 @@
 
     /* ─── RESPONSIVE ─── */
     @media (max-width: 600px) {
-      .polaroid-grid { padding: 1rem; gap: 1.5rem; }
-      .polaroid-img, .polaroid-placeholder { width: 160px; height: 160px; }
       .timeline::before { left: 1.2rem; }
       .memory-item, .memory-item:nth-child(even) {
         padding-left: 3.5rem; padding-right: 0;
@@ -720,7 +637,6 @@
 <!-- NAV -->
 <nav>
   <a href="#" class="active" onclick="showPage('home',this)">🏠 Home</a>
-  <a href="#" onclick="showPage('photos',this)">📸 flicks!!</a>
   <a href="#" onclick="showPage('letter',this)">🐻 Bear</a>
   <a href="#" onclick="showPage('memories',this)">✨ Mems</a>
 </nav>
@@ -814,54 +730,12 @@
     </div>
 
     <div class="home-cta">
-      <a class="btn" href="#" onclick="showPage('letter',document.querySelectorAll('nav a')[2]);return false;">
+      <a class="btn" href="#" onclick="showPage('letter',document.querySelectorAll('nav a')[1]);return false;">
         read letter ♡
       </a>
     </div>
   </div>
 </section>
-
-<!-- ══════════ PHOTOS ══════════ -->
-<section id="photos" class="page">
-  <div class="photos-header">
-    <p class="page-label">gallery</p>
-    <h2 class="page-title">the most extra<em>ordinary</em> moments</h2>
-  </div>
-
-  <div class="polaroid-grid" id="photo-grid">
-    <!-- Placeholders — swap <div class="polaroid-placeholder"> for <img> once you add real photos -->
-    <div class="polaroid" onclick="openLightbox(this)">
-      <div class="polaroid-placeholder">📷<br/><span>your photo here</span></div>
-      <p class="polaroid-caption">our first day ♡</p>
-    </div>
-    <div class="polaroid" onclick="openLightbox(this)">
-      <div class="polaroid-placeholder">📷<br/><span>your photo here</span></div>
-      <p class="polaroid-caption">laughing always</p>
-    </div>
-    <div class="polaroid" onclick="openLightbox(this)">
-      <div class="polaroid-placeholder">📷<br/><span>your photo here</span></div>
-      <p class="polaroid-caption">my favorite smile</p>
-    </div>
-    <div class="polaroid" onclick="openLightbox(this)">
-      <div class="polaroid-placeholder">📷<br/><span>your photo here</span></div>
-      <p class="polaroid-caption">adventures together</p>
-    </div>
-    <div class="polaroid" onclick="openLightbox(this)">
-      <div class="polaroid-placeholder">📷<br/><span>your photo here</span></div>
-      <p class="polaroid-caption">so much joy</p>
-    </div>
-    <div class="polaroid" onclick="openLightbox(this)">
-      <div class="polaroid-placeholder">📷<br/><span>your photo here</span></div>
-      <p class="polaroid-caption">us, always</p>
-    </div>
-  </div>
-</section>
-
-<!-- lightbox -->
-<div id="lightbox" onclick="closeLightbox()">
-  <span id="lightbox-close">✕</span>
-  <img id="lightbox-img" src="" alt=""/>
-</div>
 
 <!-- ══════════ LETTER (teddy first, then letter) ══════════ -->
 <section id="letter" class="page">
@@ -1077,8 +951,7 @@
       return;
     }
     if (id === 'letter' && activeTrackIndex !== 4) {
-      const shouldResume = !getActiveMusicAudio().paused;
-      setActiveTrack(4, shouldResume, true);
+      setActiveTrack(4, true, true);
       return;
     }
     syncMusicButton();
@@ -1415,16 +1288,6 @@
   updateTeddyHint();
   initHomeSlideshow();
 
-  // ─── LIGHTBOX ───
-  function openLightbox(polaroidEl) {
-    const img = polaroidEl.querySelector('img');
-    if (!img) return; // no real photo yet
-    document.getElementById('lightbox-img').src = img.src;
-    document.getElementById('lightbox').classList.add('open');
-  }
-  function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('open');
-  }
 </script>
 </body>
 </html>
