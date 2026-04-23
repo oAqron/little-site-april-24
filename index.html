@@ -557,6 +557,49 @@
       line-height: 1.6;
     }
 
+    /* ════════════════════════════════
+       TEDDY PAGE
+    ════════════════════════════════ */
+    #teddy {
+      background: linear-gradient(180deg, var(--cream) 0%, var(--blush) 100%);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 1.5rem 4rem;
+      min-height: 100vh;
+    }
+    #teddy.active { display: flex; }
+    .teddy-wrap {
+      max-width: 760px;
+      width: 100%;
+      padding: 2rem 1.5rem;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 12px 36px rgba(95,76,42,0.12);
+      backdrop-filter: blur(6px);
+    }
+    .teddy-title {
+      font-family: 'Caveat', cursive;
+      color: var(--accent);
+      font-size: 2rem;
+      margin-bottom: 0.8rem;
+    }
+    .teddy-bear {
+      font-size: clamp(8rem, 32vw, 16rem);
+      line-height: 1;
+      display: inline-block;
+      filter: drop-shadow(0 10px 20px rgba(95,76,42,0.22));
+      animation: teddyFloat 2.8s ease-in-out infinite;
+    }
+    .teddy-note {
+      font-family: 'Lora', serif;
+      color: var(--muted);
+      font-size: 1rem;
+      margin-top: 0.9rem;
+    }
+
     @keyframes slideIn {
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -564,6 +607,10 @@
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(24px); }
       to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes teddyFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
     }
 
     /* ─── RESPONSIVE ─── */
@@ -600,6 +647,7 @@
   <a href="#" onclick="showPage('photos',this)">📸 Us</a>
   <a href="#" onclick="showPage('letter',this)">💌 Letter</a>
   <a href="#" onclick="showPage('memories',this)">✨ Memories</a>
+  <a href="#" onclick="showPage('teddy',this)">🧸 Teddy</a>
 </nav>
 
 <!-- MUSIC PLAYER -->
@@ -825,6 +873,15 @@
         <p class="memory-card-desc">Miles apart, but this is proof — you're on my mind every single day.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ══════════ TEDDY ══════════ -->
+<section id="teddy" class="page">
+  <div class="teddy-wrap">
+    <p class="teddy-title">a giant teddy hug for sophie</p>
+    <div class="teddy-bear" aria-label="Teddy bear">🧸</div>
+    <p class="teddy-note">for when you need an extra-soft cuddle ♡</p>
   </div>
 </section>
 
