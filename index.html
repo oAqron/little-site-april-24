@@ -53,8 +53,8 @@
       right: 1.2rem;
       bottom: 1.2rem;
       z-index: 220;
-      width: min(370px, calc(100vw - 2rem));
-      padding: 0.9rem;
+      width: min(340px, calc(100vw - 2rem));
+      padding: 0.8rem;
       border-radius: 20px;
       border: 1px solid rgba(255,255,255,0.45);
       background: linear-gradient(145deg, rgba(255,253,242,0.74), rgba(255,244,199,0.62));
@@ -151,45 +151,6 @@
       font-size: 0.95rem;
       color: var(--muted);
       letter-spacing: 0.02em;
-    }
-    .lyrics-wrap {
-      margin-top: 0.7rem;
-      padding: 0.55rem 0.65rem;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.45);
-      border: 1px solid rgba(255,255,255,0.5);
-    }
-    .lyrics-label {
-      font-family: 'Caveat', cursive;
-      font-size: 0.95rem;
-      color: var(--muted);
-      margin-bottom: 0.3rem;
-    }
-    .lyrics-viewport {
-      height: 70px;
-      overflow: hidden;
-      position: relative;
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
-      mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
-    }
-    .lyrics-roll {
-      transition: transform 0.65s ease;
-    }
-    .lyrics-line {
-      min-height: 24px;
-      line-height: 24px;
-      font-family: 'Lora', serif;
-      font-size: 0.83rem;
-      color: var(--muted);
-      opacity: 0.55;
-      transition: opacity 0.25s ease, color 0.25s ease;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .lyrics-line.active {
-      color: var(--text);
-      opacity: 1;
     }
 
     /* ─── PAGES ─── */
@@ -428,11 +389,103 @@
     }
 
     /* ════════════════════════════════
-       LETTER PAGE
+       LETTER + TEDDY (one page)
     ════════════════════════════════ */
     #letter {
       background: var(--cream);
       min-height: 100vh;
+      position: relative;
+    }
+    .teddy-stage {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 1.5rem 4rem;
+      min-height: 100vh;
+      background: linear-gradient(180deg, var(--cream) 0%, var(--blush) 100%);
+    }
+    #letter.popped .teddy-stage { display: none; }
+    .teddy-wrap {
+      max-width: 760px;
+      width: 100%;
+      padding: 2rem 1.5rem;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 12px 36px rgba(95,76,42,0.12);
+      backdrop-filter: blur(6px);
+    }
+    .teddy-title {
+      font-family: 'Caveat', cursive;
+      color: var(--accent);
+      font-size: 2rem;
+      margin-bottom: 0.8rem;
+    }
+    .teddy-bear-shell {
+      display: inline-block;
+      animation: teddyFloat 2.8s ease-in-out infinite;
+    }
+    #teddy-bear {
+      font-size: clamp(8rem, 32vw, 16rem);
+      line-height: 1;
+      display: inline-block;
+      filter: drop-shadow(0 10px 20px rgba(95,76,42,0.22));
+      transform: scale(1);
+      transition: transform 0.22s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    #teddy-bear:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 6px;
+      border-radius: 12px;
+    }
+    .teddy-note {
+      font-family: 'Lora', serif;
+      color: var(--muted);
+      font-size: 1rem;
+      margin-top: 0.9rem;
+    }
+    .teddy-hint {
+      font-family: 'Caveat', cursive;
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-top: 0.5rem;
+      opacity: 0.85;
+    }
+    .letter-reveal {
+      display: none;
+    }
+    #letter.popped .letter-reveal {
+      display: block;
+    }
+    .confetti-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 350;
+      overflow: hidden;
+    }
+    .confetti-piece {
+      position: absolute;
+      font-size: 1.15rem;
+      will-change: transform, opacity;
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .confetti-piece.confetti-fly {
+      animation: confettiFly 1.35s ease-out forwards;
+    }
+    @keyframes confettiFly {
+      from {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        opacity: 1;
+      }
+      to {
+        transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.55) rotate(520deg);
+        opacity: 0;
+      }
     }
     .letter-wrap {
       max-width: 720px;
@@ -470,10 +523,27 @@
     }
     .letter-body p { margin-bottom: 1.5rem; }
     .letter-body em { font-style: italic; color: var(--accent); }
+    .letter-roll-line {
+      opacity: 0;
+      transform: translateY(-22px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .letter-roll-line.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #letter.letter-roll-done .letter-roll-line {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
 
     .letter-sign {
       text-align: right;
       margin-top: 3rem;
+    }
+    .letter-body .letter-roll-line.letter-sign {
+      margin-top: 2.5rem;
     }
     .letter-sign-name {
       font-family: 'Caveat', cursive;
@@ -557,49 +627,6 @@
       line-height: 1.6;
     }
 
-    /* ════════════════════════════════
-       TEDDY PAGE
-    ════════════════════════════════ */
-    #teddy {
-      background: linear-gradient(180deg, var(--cream) 0%, var(--blush) 100%);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 6rem 1.5rem 4rem;
-      min-height: 100vh;
-    }
-    #teddy.active { display: flex; }
-    .teddy-wrap {
-      max-width: 760px;
-      width: 100%;
-      padding: 2rem 1.5rem;
-      border-radius: 28px;
-      background: rgba(255,255,255,0.5);
-      border: 1px solid rgba(255,255,255,0.6);
-      box-shadow: 0 12px 36px rgba(95,76,42,0.12);
-      backdrop-filter: blur(6px);
-    }
-    .teddy-title {
-      font-family: 'Caveat', cursive;
-      color: var(--accent);
-      font-size: 2rem;
-      margin-bottom: 0.8rem;
-    }
-    .teddy-bear {
-      font-size: clamp(8rem, 32vw, 16rem);
-      line-height: 1;
-      display: inline-block;
-      filter: drop-shadow(0 10px 20px rgba(95,76,42,0.22));
-      animation: teddyFloat 2.8s ease-in-out infinite;
-    }
-    .teddy-note {
-      font-family: 'Lora', serif;
-      color: var(--muted);
-      font-size: 1rem;
-      margin-top: 0.9rem;
-    }
-
     @keyframes slideIn {
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -647,7 +674,6 @@
   <a href="#" onclick="showPage('photos',this)">📸 Us</a>
   <a href="#" onclick="showPage('letter',this)">💌 Letter</a>
   <a href="#" onclick="showPage('memories',this)">✨ Memories</a>
-  <a href="#" onclick="showPage('teddy',this)">🧸 Teddy</a>
 </nav>
 
 <!-- MUSIC PLAYER -->
@@ -672,12 +698,6 @@
     <div class="music-time">
       <span id="music-current-time">0:00</span>
       <span id="music-duration">0:00</span>
-    </div>
-  </div>
-  <div class="lyrics-wrap">
-    <p class="lyrics-label">live lyrics</p>
-    <div class="lyrics-viewport">
-      <div id="lyrics-roll" class="lyrics-roll"></div>
     </div>
   </div>
 </div>
@@ -789,42 +809,57 @@
   <img id="lightbox-img" src="" alt=""/>
 </div>
 
-<!-- ══════════ LETTER ══════════ -->
+<!-- ══════════ LETTER (teddy first, then letter) ══════════ -->
 <section id="letter" class="page">
-  <div class="letter-wrap">
-    <div class="letter-header">
-      <span class="letter-decoration">🌷</span>
-      <p class="page-label">letter!</p>
-      <p class="letter-to">dear sophie,</p>
+  <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
+
+  <div class="teddy-stage" id="teddy-stage">
+    <div class="teddy-wrap">
+      <p class="teddy-title">a giant teddy hug for sophie</p>
+      <div class="teddy-bear-shell">
+        <div id="teddy-bear" role="button" tabindex="0" aria-label="Teddy bear — tap ten times">🧸</div>
+      </div>
+      <p class="teddy-note">for when you need an extra-soft cuddle ♡</p>
+      <p class="teddy-hint" id="teddy-hint">Tap the teddy ten times for a surprise ♡</p>
     </div>
+  </div>
 
-    <div class="letter-body">
-      <p>
-        Four months. It sounds so small when you say it out loud, but when I think about everything
-        those four months hold — every laugh, every late-night call, every little moment I've saved
-        in my heart — it feels like a whole world we've built together.
-      </p>
-      <p>
-        I don't think you know how often I think about you. It happens quietly, in the middle of
-        ordinary things — when a song comes on, when I see something funny and immediately want to
-        tell you, when I'm half-asleep and your voice is the last thing I'm thinking about.
-      </p>
-      <p>
-        Being apart right now is one of the hardest things I've felt in a while. But every time I
-        feel that distance, I also feel how <em>real</em> this is — how much you mean to me. Distance
-        just made that clearer.
-      </p>
-      <p>
-        I made this little corner of the internet because I wanted you to have something to hold onto.
-        Something that says: <em>I'm thinking about you. I'm proud of us. I can't wait to see you again.</em>
-      </p>
-      <p>
-        Thank you for being exactly who you are. Thank you for choosing me, every single day.
-      </p>
+  <div class="letter-reveal" id="letter-reveal">
+    <div class="letter-wrap">
+      <div class="letter-header">
+        <div class="letter-roll-line"><span class="letter-decoration">🌷</span></div>
+        <p class="page-label letter-roll-line">letter!</p>
+        <p class="letter-to letter-roll-line">dear sophie,</p>
+      </div>
 
-      <div class="letter-sign">
-        <p class="letter-sign-name">I love you, always ♡</p>
-        <p class="letter-sign-date">Aaron · April 24, 2026</p>
+      <div class="letter-body">
+        <p class="letter-roll-line">
+          Four months. It sounds so small when you say it out loud, but when I think about everything
+          those four months hold — every laugh, every late-night call, every little moment I've saved
+          in my heart — it feels like a whole world we've built together.
+        </p>
+        <p class="letter-roll-line">
+          I don't think you know how often I think about you. It happens quietly, in the middle of
+          ordinary things — when a song comes on, when I see something funny and immediately want to
+          tell you, when I'm half-asleep and your voice is the last thing I'm thinking about.
+        </p>
+        <p class="letter-roll-line">
+          Being apart right now is one of the hardest things I've felt in a while. But every time I
+          feel that distance, I also feel how <em>real</em> this is — how much you mean to me. Distance
+          just made that clearer.
+        </p>
+        <p class="letter-roll-line">
+          I made this little corner of the internet because I wanted you to have something to hold onto.
+          Something that says: <em>I'm thinking about you. I'm proud of us. I can't wait to see you again.</em>
+        </p>
+        <p class="letter-roll-line">
+          Thank you for being exactly who you are. Thank you for choosing me, every single day.
+        </p>
+
+        <div class="letter-roll-line letter-sign">
+          <p class="letter-sign-name">I love you, always ♡</p>
+          <p class="letter-sign-date">Aaron · April 24, 2026</p>
+        </div>
       </div>
     </div>
   </div>
@@ -873,15 +908,6 @@
         <p class="memory-card-desc">Miles apart, but this is proof — you're on my mind every single day.</p>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- ══════════ TEDDY ══════════ -->
-<section id="teddy" class="page">
-  <div class="teddy-wrap">
-    <p class="teddy-title">a giant teddy hug for sophie</p>
-    <div class="teddy-bear" aria-label="Teddy bear">🧸</div>
-    <p class="teddy-note">for when you need an extra-soft cuddle ♡</p>
   </div>
 </section>
 
@@ -947,113 +973,9 @@
     }
   ];
   let activeTrackIndex = 0;
-  const lyricLineHeight = 24;
-  const lyricTimelines = [
-    [
-      { time: 0, text: 'Making small talk on the sidewalk.' },
-      { time: 7, text: 'Stars up in your eyes.' },
-      { time: 11, text: 'Spent the day together.' },
-      { time: 15, text: 'And when it turned to nine.' },
-      { time: 18, text: 'And when it turned to nine.' },
-      { time: 23, text: 'And when it turned to nine.' },
-      { time: 26, text: 'And when it turned to nine.' },
-      { time: 29, text: 'And when it turned to nine.' },
-      { time: 31, text: 'And when it turned to nine.' },
-      { time: 35, text: 'And when it turned to nine.' },
-      { time: 38, text: 'And when it turned to nine.' },
-      { time: 43, text: 'And when it turned to nine.' },
-      { time: 45, text: 'And when it turned to nine.' },
-      { time: 48, text: 'And when it turned to nine.' },
-      { time: 53, text: 'And when it turned to nine.' },
-      { time: 57, text: 'And when it turned to nine.' },
-      { time: 64, text: 'And when it turned to nine.' },
-      { time: 69, text: 'And when it turned to nine.' },
-      { time: 72, text: 'And when it turned to nine.' },
-      { time: 76, text: 'And when it turned to nine.' },
-      { time: 79, text: 'And when it turned to nine.' },
-      { time: 83, text: 'And when it turned to nine.' },
-      { time: 86, text: 'And when it turned to nine.' },
-      { time: 91, text: 'And when it turned to nine.' },
-      { time: 92, text: 'And when it turned to nine.' },
-      { time: 96, text: 'And when it turned to nine.' },
-      { time: 100, text: 'And when it turned to nine.' },
-
-    ],
-    [
-      { time: 0, text: 'Two hearts, same sky.' },
-      { time: 10, text: 'Distance fades when you smile.' },
-      { time: 21, text: 'Every moment points back to you.' },
-      { time: 33, text: 'You and I, always.' }
-    ],
-    [
-      { time: 0, text: 'Quiet start, warm memory.' },
-      { time: 8, text: 'You make ordinary moments glow.' },
-      { time: 18, text: 'I stay where your voice feels close.' },
-      { time: 30, text: 'Before you, I never knew this peace.' }
-    ],
-    [
-      { time: 0, text: 'Blue sky, slow breath.' },
-      { time: 11, text: 'I keep your laugh in my pocket.' },
-      { time: 22, text: 'Everything softer when you are near.' },
-      { time: 34, text: 'The whole day turns bright for you.' }
-    ],
-    [
-      { time: 0, text: 'A single look and I am home.' },
-      { time: 10, text: 'Your heartbeat writes the rhythm.' },
-      { time: 21, text: 'I hear forever in a whisper.' },
-      { time: 34, text: 'Every verse points back to us.' }
-    ],
-    [
-      { time: 0, text: 'Small moments become golden.' },
-      { time: 9, text: 'Snapshots of us, soft and true.' },
-      { time: 20, text: 'I keep every smile like treasure.' },
-      { time: 32, text: 'Love stays in the little details.' }
-    ],
-    [
-      { time: 0, text: 'Hold this second, hold this hand.' },
-      { time: 11, text: 'Promise tucked between each breath.' },
-      { time: 22, text: 'No matter the miles, I choose you.' },
-      { time: 34, text: 'Stay with me through every season.' }
-    ],
-    [
-      { time: 0, text: 'City lights and a shared wish.' },
-      { time: 10, text: 'Two names written in the stars.' },
-      { time: 21, text: 'Dreams turn real when we are brave.' },
-      { time: 33, text: 'Rewrite the sky, just us.' }
-    ]
-  ];
 
   function getActiveMusicAudio() {
     return tracks[activeTrackIndex].audio;
-  }
-
-  function getCurrentTimeline() {
-    return lyricTimelines[activeTrackIndex] || [];
-  }
-
-  function renderLyricsRoll() {
-    const roll = document.getElementById('lyrics-roll');
-    const timeline = getCurrentTimeline();
-    roll.innerHTML = timeline.map((line, idx) =>
-      `<p class="lyrics-line${idx === 0 ? ' active' : ''}" data-idx="${idx}">${line.text}</p>`
-    ).join('');
-    roll.style.transform = 'translateY(0)';
-  }
-
-  function syncLyrics() {
-    const timeline = getCurrentTimeline();
-    if (!timeline.length) return;
-    const current = getActiveMusicAudio().currentTime || 0;
-    let activeLine = 0;
-    for (let i = 0; i < timeline.length; i++) {
-      if (current >= timeline[i].time) activeLine = i;
-    }
-    const roll = document.getElementById('lyrics-roll');
-    const offset = Math.max(0, activeLine - 1) * lyricLineHeight;
-    roll.style.transform = `translateY(-${offset}px)`;
-    roll.querySelectorAll('.lyrics-line').forEach((lineEl, idx) => {
-      lineEl.classList.toggle('active', idx === activeLine);
-    });
   }
 
   function showPage(id, linkEl) {
@@ -1093,7 +1015,6 @@
     fallbackEl.style.display = 'none';
     if (startFromBeginning) track.audio.currentTime = 0;
     if (shouldPlay) track.audio.play().catch(() => {});
-    renderLyricsRoll();
     syncMusicButton();
     syncMusicProgress();
   }
@@ -1116,7 +1037,6 @@
     progress.value = String(pct);
     currentTime.textContent = formatTime(audio.currentTime);
     duration.textContent = formatTime(total);
-    syncLyrics();
   }
 
   function playNextTrack() {
@@ -1239,9 +1159,89 @@
     document.getElementById('music-cover').style.display = 'none';
     document.getElementById('music-cover-fallback').style.display = 'grid';
   });
-  renderLyricsRoll();
   attemptAutoStart();
   setupFirstInteractionAutoplayRetry();
+
+  // ─── TEDDY → LETTER EASTER EGG ───
+  const letterPage = document.getElementById('letter');
+  const teddyBear = document.getElementById('teddy-bear');
+  const teddyHint = document.getElementById('teddy-hint');
+  const confettiLayer = document.getElementById('confetti-layer');
+  let teddyTapCount = 0;
+  let teddyBurstDone = false;
+
+  function updateTeddyHint() {
+    if (!teddyHint || teddyBurstDone || letterPage.classList.contains('popped')) return;
+    const left = 10 - teddyTapCount;
+    if (teddyTapCount <= 0) {
+      teddyHint.textContent = 'Tap the teddy ten times for a surprise ♡';
+    } else if (left === 1) {
+      teddyHint.textContent = 'One more tap… ♡';
+    } else {
+      teddyHint.textContent = `${left} more taps to open ♡`;
+    }
+  }
+
+  function spawnConfetti() {
+    if (!teddyBear || !confettiLayer) return;
+    const rect = teddyBear.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const emojis = ['🎊', '✨', '💖', '🌸', '⭐', '💛', '🌼', '♡', '🎀'];
+    confettiLayer.innerHTML = '';
+    for (let i = 0; i < 64; i++) {
+      const el = document.createElement('span');
+      el.className = 'confetti-piece';
+      el.textContent = emojis[i % emojis.length];
+      el.style.left = `${cx}px`;
+      el.style.top = `${cy}px`;
+      const ang = Math.random() * Math.PI * 2;
+      const dist = 85 + Math.random() * 210;
+      el.style.setProperty('--dx', `${Math.cos(ang) * dist}px`);
+      el.style.setProperty('--dy', `${Math.sin(ang) * dist + 45}px`);
+      confettiLayer.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('confetti-fly'));
+    }
+    setTimeout(() => { confettiLayer.innerHTML = ''; }, 1700);
+  }
+
+  function startLetterRoll() {
+    if (letterPage.classList.contains('letter-roll-done')) return;
+    const lines = letterPage.querySelectorAll('.letter-reveal .letter-roll-line');
+    lines.forEach((line, i) => {
+      setTimeout(() => line.classList.add('is-visible'), 220 + i * 880);
+    });
+    setTimeout(() => {
+      letterPage.classList.add('letter-roll-done');
+    }, 220 + lines.length * 880 + 700);
+  }
+
+  function onTeddyTap(event) {
+    if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;
+    if (event.type === 'keydown') event.preventDefault();
+    if (teddyBurstDone || letterPage.classList.contains('popped')) return;
+    teddyTapCount += 1;
+    if (teddyTapCount < 10) {
+      teddyBear.style.transform = `scale(${1 + teddyTapCount * 0.065})`;
+      updateTeddyHint();
+      return;
+    }
+    teddyBurstDone = true;
+    teddyBear.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
+    teddyBear.style.transform = 'scale(2.25) rotate(10deg)';
+    teddyBear.style.opacity = '0';
+    spawnConfetti();
+    setTimeout(() => {
+      letterPage.classList.add('popped');
+      startLetterRoll();
+    }, 420);
+  }
+
+  if (teddyBear) {
+    teddyBear.addEventListener('click', onTeddyTap);
+    teddyBear.addEventListener('keydown', onTeddyTap);
+  }
+  updateTeddyHint();
 
   // ─── LIGHTBOX ───
   function openLightbox(polaroidEl) {
